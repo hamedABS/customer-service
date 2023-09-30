@@ -1,6 +1,5 @@
 package ir.negah.bank.domain;
 
-import ir.negah.bank.domain.enums.ClientStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,18 +19,17 @@ import java.util.List;
 
 /**
  * CREATED_BY abbaszadeh
- * DATE: ۲۰۲۳/۹/۲۵
- * TIME: ۱۰:۰۲
+ * DATE: ۲۰۲۳/۹/۲۷
+ * TIME: ۹:۰۵
  */
-
 
 @Data
 @Entity
-@Table(name = "CUSTOMER")
+@Table(name = "CUSTOMER_COMMAND")
 @Audited
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerEntity extends BaseEntity {
+public class CustomerCommandEntity extends BaseEntity {
 
     @Column(name = "account_no", length = 20, unique = true, nullable = false)
     private String accountNumber;
@@ -42,9 +40,9 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "customer_image",nullable = false)
     private String customerImage;
 
-    @Column(name = "client_status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ClientStatus clientStatus;
+//    @Column(name = "client_status", nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private ClientStatus clientStatus;
 
     @Column(name = "firstname", length = 50)
     private String firstname;
@@ -67,19 +65,19 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gender_id")
-    private CodeValue gender;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_classification_id")
-    private CodeValue clientClassification;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_type_id")
-    private CodeValue clientType;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<OperationDoneByWhenWhy> operations;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "gender_id")
+//    private CodeValue gender;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "client_classification_id")
+//    private CodeValue clientClassification;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "client_type_id")
+//    private CodeValue clientType;
+//
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private List<OperationDoneByWhenWhy> operations;
 
 }

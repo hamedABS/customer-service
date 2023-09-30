@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.1.2'
+}
+
+group 'ir.negah.bank'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    set('otelVersion', "1.17.0")
+    set('springCloudVersion', "2021.0.3")
+    set('testcontainersVersion', "1.17.3")
+}
+dependencies {
+    implementation 'ir.negah.bank:common-module:2023.0.2'
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.data:spring-data-envers'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc11', version: '23.2.0.0'
+    implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.oracle', version: '2.7.5'
+    implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '18.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.31'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.3'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.axonframework:axon-spring-boot-starter:4.8.2',{ exclude group:'org.axonframework', module: 'axon-server-connector' }
+    implementation 'com.google.guava:guava:32.1.2-jre'
+
+
+
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+
+
+    testImplementation "org.testcontainers:oracle-xe:1.19.0"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,24 @@
+package ir.negah.bank.events;
+
+import ir.negah.bank.domain.CustomerCommandEntity;
+import ir.negah.bank.repository.CustomerCommandEntityRepository;
+import org.axonframework.eventhandling.EventHandler;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
+
+/**
+ * CREATED_BY abbaszadeh
+ * DATE: ۲۰۲۳/۹/۲۷
+ * TIME: ۱۰:۳۸
+ */
+
+@Component
+public record CustomerEventHandler(CustomerCommandEntityRepository repository) {
+
+    @EventHandler
+    public void on(CustomerCreatedEvent event){
+        CustomerCommandEntity entity = new CustomerCommandEntity();
+        BeanUtils.copyProperties(event,entity);
+        repository.save(entity);
+    }
+}
