@@ -1,6 +1,7 @@
 package ir.negah.bank.projection;
 
 import ir.negah.bank.query.GetCustomerQuery;
+import ir.negah.bank.repository.CustomerRepository;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

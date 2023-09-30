@@ -3,7 +3,6 @@ package ir.negah.bank.controller;
 import ir.negah.bank.query.GetCustomerQuery;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.ReactiveTransaction;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
