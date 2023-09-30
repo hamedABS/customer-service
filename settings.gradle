@@ -1,3 +1,4 @@
 rootProject.name = 'customer-service'
 include 'customer-query','customer-command'
+include 'core-api'
 
