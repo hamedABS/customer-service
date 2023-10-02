@@ -1,6 +1,7 @@
 package ir.negah.bank.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import ir.negah.bank.domain.CustomerStatus;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,9 +21,7 @@ public class CustomerCreateRequestDTO {
 
     private String customerImage;
 
-//    @Column(name = "client_status", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private ClientStatus clientStatus;
+    private CustomerStatus customerStatus;
 
     private String firstname;
 

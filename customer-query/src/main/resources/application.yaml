@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8086
 spring:
   application:
     name: customer-query
@@ -19,17 +19,21 @@ spring:
         max-interval: 2000 # 2s
         multiplier: 1.1
   datasource:
-    username: root
+    username: user
     password: password
-    url: jdbc:oracle:thin:@//localhost:47162/ORCLCDB.localdomain
+    url: jdbc:postgresql://localhost:5432/polardb_catalog
     hikari:
       connection-timeout: 2000 #ms
       maximum-pool-size: 5
-      driver-class-name: oracle.jdbc.OracleDriver
   jpa:
     hibernate:
-      ddl-auto: create-drop
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
+      ddl-auto: update
+  flyway:
+    enabled: false
 
+
+axon:
+  eventhandling:
+    processors:
+      name:
+        mode: tracking

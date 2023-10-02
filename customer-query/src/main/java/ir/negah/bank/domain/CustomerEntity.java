@@ -1,10 +1,10 @@
 package ir.negah.bank.domain;
 
-import ir.negah.bank.domain.enums.ClientStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +28,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "CUSTOMER")
-@Audited
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerEntity extends BaseEntity {
@@ -44,7 +44,7 @@ public class CustomerEntity extends BaseEntity {
 
     @Column(name = "client_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ClientStatus clientStatus;
+    private CustomerStatus customerStatus;
 
     @Column(name = "firstname", length = 50)
     private String firstname;

@@ -1,19 +1,27 @@
-package ir.negah.bank.command;
+package ir.negah.bank.events;
 
 import ir.negah.bank.domain.CustomerStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 /**
  * CREATED_BY abbaszadeh
  * DATE: ۲۰۲۳/۹/۲۷
- * TIME: ۱۰:۱۳
+ * TIME: ۱۰:۳۰
  */
+
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class CreateCustomerCommand extends BaseCommand {
+public class CustomerModifiedEvent {
+
+
+    private String customerId;
 
     private String accountNumber;
 
@@ -36,4 +44,5 @@ public class CreateCustomerCommand extends BaseCommand {
     private String email;
 
     private LocalDate dateOfBirth;
+
 }

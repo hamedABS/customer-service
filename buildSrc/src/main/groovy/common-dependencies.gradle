@@ -41,7 +41,9 @@ dependencies {
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.31'
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.3'
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.axonframework:axon-spring-boot-starter:4.8.2'
+    implementation('org.axonframework:axon-spring-boot-starter:4.8.2') {
+        exclude group: 'org.axonframework', module: 'axon-server-connector'
+    }
     implementation 'com.google.guava:guava:32.1.2-jre'
 
 

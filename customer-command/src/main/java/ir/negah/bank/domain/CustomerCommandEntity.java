@@ -1,3 +1,4 @@
+/*
 package ir.negah.bank.domain;
 
 import lombok.AllArgsConstructor;
@@ -17,11 +18,13 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
+*/
 /**
  * CREATED_BY abbaszadeh
  * DATE: ۲۰۲۳/۹/۲۷
  * TIME: ۹:۰۵
- */
+ *//*
+
 
 @Data
 @Entity
@@ -81,3 +84,4 @@ public class CustomerCommandEntity extends BaseEntity {
 //    private List<OperationDoneByWhenWhy> operations;
 
 }
+*/

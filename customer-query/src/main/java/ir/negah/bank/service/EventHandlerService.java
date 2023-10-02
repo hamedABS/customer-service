@@ -1,11 +1,15 @@
 package ir.negah.bank.service;
 
 import ir.negah.bank.domain.CustomerEntity;
+import ir.negah.bank.domain.CustomerStatus;
+import ir.negah.bank.events.CustomerActivatedEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
 import ir.negah.bank.repository.CustomerRepository;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * CREATED_BY abbaszadeh
@@ -17,10 +21,20 @@ import org.springframework.stereotype.Service;
 public record EventHandlerService(CustomerRepository customerRepository) {
 
     @EventHandler
-    public void on(CustomerCreatedEvent event){
+    public void on(CustomerCreatedEvent event) {
         CustomerEntity entity = new CustomerEntity();
-        BeanUtils.copyProperties(event,entity);
+        BeanUtils.copyProperties(event, entity);
         customerRepository.save(entity);
+    }
+
+
+    @EventHandler
+    public void on(CustomerActivatedEvent event) {
+//        Optional<CustomerEntity> byId = customerRepository.findById(event.customerId());
+//        byId.get().setCustomerStatus(CustomerStatus.ACTIVE);
+//        customerRepository.save(byId.get());
+
+        System.out.println(event.toString());
     }
 
 }

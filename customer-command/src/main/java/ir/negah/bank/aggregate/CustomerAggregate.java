@@ -1,8 +1,14 @@
 package ir.negah.bank.aggregate;
 
+import ir.negah.bank.command.ActivateCustomerCommand;
+import ir.negah.bank.command.BaseCommand;
+import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
+import ir.negah.bank.domain.CustomerStatus;
+import ir.negah.bank.events.CustomerActivatedEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
@@ -28,9 +34,7 @@ public class CustomerAggregate {
 
     private String customerImage;
 
-//    @Column(name = "client_status", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private ClientStatus clientStatus;
+    private CustomerStatus customerStatus;
 
     private String firstname;
 
@@ -47,15 +51,21 @@ public class CustomerAggregate {
     private LocalDate dateOfBirth;
 
 
+    public CustomerAggregate() {
+    }
+
     @CommandHandler
     public CustomerAggregate(CreateCustomerCommand createCustomerCommand) {
         //perform all validations ....
 
+
         CustomerCreatedEvent customerCreatedEvent =
-                new CustomerCreatedEvent(createCustomerCommand.getCustomerId(),
+                new CustomerCreatedEvent(
+                        createCustomerCommand.getCustomerId(),
                         createCustomerCommand.getAccountNumber(),
                         createCustomerCommand.getOfficeCode(),
                         createCustomerCommand.getCustomerImage(),
+                        createCustomerCommand.getCustomerStatus(),
                         createCustomerCommand.getFirstname(),
                         createCustomerCommand.getLastname(),
                         createCustomerCommand.getFullName(),
@@ -69,11 +79,19 @@ public class CustomerAggregate {
 
     }
 
+    @CommandHandler
+    public void handle (ActivateCustomerCommand command){
+        if (command.getCommand().equals(Command.ACTIVATE)){
+            CustomerActivatedEvent event = new CustomerActivatedEvent(command.getCustomerId());
+            AggregateLifecycle.apply(event);
+        }
+    }
+
 
     @EventSourcingHandler
-    public void on(CustomerCreatedEvent event){
-        this.customerId = event.getCustomerId();
+    public void on(CustomerCreatedEvent event) {
         this.firstname = event.getFirstname();
+        this.customerId = event.getCustomerId();
         this.lastname = event.getLastname();
         this.fullName = event.getFullName();
         this.displayName = event.getDisplayName();
@@ -83,5 +101,12 @@ public class CustomerAggregate {
         this.email = event.getEmail();
         this.customerImage = event.getCustomerImage();
         this.OfficeCode = event.getOfficeCode();
+        this.customerStatus = event.getCustomerStatus();
+    }
+
+    @EventSourcingHandler
+    public void on(CustomerActivatedEvent event){
+        this.customerId = event.getCustomerId();
+        this.customerStatus = CustomerStatus.ACTIVE;
     }
 }

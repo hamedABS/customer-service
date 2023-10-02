@@ -1,5 +1,6 @@
 package ir.negah.bank.events;
 
+import ir.negah.bank.domain.CustomerStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,9 +29,7 @@ public class CustomerCreatedEvent {
 
     private String customerImage;
 
-//    @Column(name = "client_status", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private ClientStatus clientStatus;
+    private CustomerStatus customerStatus;
 
     private String firstname;
 

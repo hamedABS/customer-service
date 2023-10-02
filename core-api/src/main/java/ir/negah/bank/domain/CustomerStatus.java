@@ -1,4 +1,4 @@
-package ir.negah.bank.domain.enums;
+package ir.negah.bank.domain;
 
 /**
  * CREATED_BY abbaszadeh
@@ -6,7 +6,7 @@ package ir.negah.bank.domain.enums;
  * TIME: ۱۰:۲۰
  */
 
-public enum ClientStatus {
+public enum CustomerStatus {
     INVALID,
     PENDING,
     ACTIVE,
