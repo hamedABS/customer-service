@@ -38,7 +38,7 @@ public class CustomerCommandEntity extends BaseEntity {
     private String accountNumber;
 
     @Column(name = "office_code", nullable = false)
-    private String OfficeCode;
+    private String officeCode;
 
     @Column(name = "customer_image",nullable = false)
     private String customerImage;

@@ -30,11 +30,9 @@ public record EventHandlerService(CustomerRepository customerRepository) {
 
     @EventHandler
     public void on(CustomerActivatedEvent event) {
-//        Optional<CustomerEntity> byId = customerRepository.findById(event.customerId());
-//        byId.get().setCustomerStatus(CustomerStatus.ACTIVE);
-//        customerRepository.save(byId.get());
-
-        System.out.println(event.toString());
+        Optional<CustomerEntity> byEmail = customerRepository.findByEmail(event.getEmail());
+        byEmail.get().setCustomerStatus(CustomerStatus.ACTIVE);
+        customerRepository.save(byEmail.get());
     }
 
 }

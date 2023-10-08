@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomerActivatedEvent {
     private String customerId;
+    private String email;
 }

@@ -1,18 +1,18 @@
 package ir.negah.bank.aggregate;
 
 import ir.negah.bank.command.ActivateCustomerCommand;
-import ir.negah.bank.command.BaseCommand;
 import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.domain.CustomerStatus;
+import ir.negah.bank.domain.mapper.CustomerMapper;
 import ir.negah.bank.events.CustomerActivatedEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 
@@ -30,7 +30,7 @@ public class CustomerAggregate {
 
     private String accountNumber;
 
-    private String OfficeCode;
+    private String officeCode;
 
     private String customerImage;
 
@@ -58,31 +58,16 @@ public class CustomerAggregate {
     public CustomerAggregate(CreateCustomerCommand createCustomerCommand) {
         //perform all validations ....
 
-
-        CustomerCreatedEvent customerCreatedEvent =
-                new CustomerCreatedEvent(
-                        createCustomerCommand.getCustomerId(),
-                        createCustomerCommand.getAccountNumber(),
-                        createCustomerCommand.getOfficeCode(),
-                        createCustomerCommand.getCustomerImage(),
-                        createCustomerCommand.getCustomerStatus(),
-                        createCustomerCommand.getFirstname(),
-                        createCustomerCommand.getLastname(),
-                        createCustomerCommand.getFullName(),
-                        createCustomerCommand.getDisplayName(),
-                        createCustomerCommand.getMobileNo(),
-                        createCustomerCommand.getEmail(),
-                        createCustomerCommand.getDateOfBirth()
-                );
-
-        AggregateLifecycle.apply(customerCreatedEvent);
+        CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
+        CustomerCreatedEvent createdEvent = mapper.createCommandToCreateCommand(createCustomerCommand);
+        AggregateLifecycle.apply(createdEvent);
 
     }
 
     @CommandHandler
     public void handle (ActivateCustomerCommand command){
         if (command.getCommand().equals(Command.ACTIVATE)){
-            CustomerActivatedEvent event = new CustomerActivatedEvent(command.getCustomerId());
+            CustomerActivatedEvent event = new CustomerActivatedEvent(command.getCustomerId(),this.email);
             AggregateLifecycle.apply(event);
         }
     }
@@ -100,9 +85,11 @@ public class CustomerAggregate {
         this.mobileNo = event.getMobileNo();
         this.email = event.getEmail();
         this.customerImage = event.getCustomerImage();
-        this.OfficeCode = event.getOfficeCode();
+        this.officeCode = event.getOfficeCode();
         this.customerStatus = event.getCustomerStatus();
     }
+
+
 
     @EventSourcingHandler
     public void on(CustomerActivatedEvent event){

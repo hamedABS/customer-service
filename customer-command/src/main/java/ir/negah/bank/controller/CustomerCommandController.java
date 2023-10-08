@@ -4,8 +4,10 @@ import ir.negah.bank.command.ActivateCustomerCommand;
 import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
+import ir.negah.bank.domain.mapper.CustomerMapper;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,21 +32,11 @@ import java.util.stream.Stream;
 @RequestMapping("/api/customers")
 public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore) {
 
+    private final static CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
+
     @PostMapping
     public String create(@RequestBody CustomerCreateRequestDTO requestDTO) {
-        CreateCustomerCommand createCustomerCommand = CreateCustomerCommand
-                .builder()
-                .firstname(requestDTO.getFirstname())
-                .lastname(requestDTO.getLastname())
-                .fullName(requestDTO.getFullName())
-                .displayName(requestDTO.getDisplayName())
-                .email(requestDTO.getEmail())
-                .accountNumber(requestDTO.getAccountNumber())
-                .customerStatus(requestDTO.getCustomerStatus())
-                .mobileNo(requestDTO.getMobileNo())
-                .OfficeCode(requestDTO.getOfficeCode())
-                .customerImage(requestDTO.getCustomerImage())
-                .dateOfBirth(requestDTO.getDateOfBirth()).build();
+        CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCommandTO(requestDTO);
 
         createCustomerCommand.setCustomerId(UUID.randomUUID().toString());
         String result = commandGateway.sendAndWait(createCustomerCommand);

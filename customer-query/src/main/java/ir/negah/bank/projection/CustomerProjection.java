@@ -12,7 +12,13 @@ import org.springframework.stereotype.Component;
  * TIME: ۹:۴۷
  */
 @Component
-public record CustomerProjection(CustomerRepository customerRepository) {
+public class CustomerProjection {
+
+    private CustomerRepository customerRepository;
+
+    public CustomerProjection(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
 
     @QueryHandler

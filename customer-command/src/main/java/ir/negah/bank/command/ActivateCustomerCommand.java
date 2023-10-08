@@ -1,8 +1,5 @@
 package ir.negah.bank.command;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 /**
  * CREATED_BY abbaszadeh
  * DATE: ۲۰۲۳/۱۰/۲

@@ -3,8 +3,6 @@ package ir.negah.bank.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +26,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "CUSTOMER")
-@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+//@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerEntity extends BaseEntity {
@@ -37,7 +35,7 @@ public class CustomerEntity extends BaseEntity {
     private String accountNumber;
 
     @Column(name = "office_code", nullable = false)
-    private String OfficeCode;
+    private String officeCode;
 
     @Column(name = "customer_image",nullable = false)
     private String customerImage;
@@ -58,8 +56,8 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "display_name", length = 100)
     private String displayName;
 
-    @Column(name = "mobile_no", length = 50, unique = true)
-    private String mobileNo;
+    @Column(name = "mobile_number", length = 50, unique = true)
+    private String mobileNumber;
 
     @Column(name = "email", length = 50, unique = true)
     private String email;

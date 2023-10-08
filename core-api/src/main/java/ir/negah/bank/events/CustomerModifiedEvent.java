@@ -25,7 +25,7 @@ public class CustomerModifiedEvent {
 
     private String accountNumber;
 
-    private String OfficeCode;
+    private String officeCode;
 
     private String customerImage;
 
