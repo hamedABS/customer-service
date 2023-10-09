@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation project(":core-api")
     implementation 'org.axonframework:axon-configuration:4.5.15'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
     runtimeOnly 'org.postgresql:postgresql'
 }
 

@@ -13,7 +13,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class  BaseCommand {
+public class BaseCommand {
     @TargetAggregateIdentifier
     private String customerId;
 

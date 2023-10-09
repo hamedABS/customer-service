@@ -26,7 +26,6 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "CUSTOMER")
-//@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerEntity extends BaseEntity {

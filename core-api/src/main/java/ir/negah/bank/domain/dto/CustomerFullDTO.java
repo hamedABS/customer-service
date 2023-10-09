@@ -1,21 +1,21 @@
-package ir.negah.bank.command;
+package ir.negah.bank.domain.dto;
 
 import ir.negah.bank.domain.CustomerStatus;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 /**
  * CREATED_BY abbaszadeh
- * DATE: ۲۰۲۳/۹/۲۷
- * TIME: ۱۰:۱۳
+ * DATE: ۲۰۲۳/۱۰/۸
+ * TIME: ۱۵:۲۲
  */
 @Data
-@Builder
 @AllArgsConstructor
-public class CreateCustomerCommand extends BaseCommand {
+@NoArgsConstructor
+public class CustomerFullDTO {
 
     private String accountNumber;
 
@@ -33,7 +33,7 @@ public class CreateCustomerCommand extends BaseCommand {
 
     private String displayName;
 
-    private String mobileNo;
+    private String mobileNumber;
 
     private String email;
 

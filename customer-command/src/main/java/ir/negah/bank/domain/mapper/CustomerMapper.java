@@ -14,6 +14,6 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface CustomerMapper {
     CreateCustomerCommand createRequestDTOToCommandTO(CustomerCreateRequestDTO requestDTO);
-    CustomerCreatedEvent createCommandToCreateCommand(CreateCustomerCommand command);
+    CustomerCreatedEvent createCommandToCreatedEvent(CreateCustomerCommand command);
 
 }

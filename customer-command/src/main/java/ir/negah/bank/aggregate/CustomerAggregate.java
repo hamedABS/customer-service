@@ -59,7 +59,7 @@ public class CustomerAggregate {
         //perform all validations ....
 
         CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
-        CustomerCreatedEvent createdEvent = mapper.createCommandToCreateCommand(createCustomerCommand);
+        CustomerCreatedEvent createdEvent = mapper.createCommandToCreatedEvent(createCustomerCommand);
         AggregateLifecycle.apply(createdEvent);
 
     }
