@@ -1,8 +1,8 @@
 package ir.negah.bank.controller;
 
-import ir.negah.bank.command.ActivateCustomerCommand;
-import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
+import ir.negah.bank.command.DoOperationOnCustomerCommand;
+import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -51,21 +52,21 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @PostMapping("/{customerId}")
     public ResponseEntity<String> doCommand(@PathVariable(name = "customerId") String customerId,
-                                            @RequestParam("command") Command command) throws Exception {
-        String result = applyCommandOverCustomer(customerId, command);
+                                            @RequestParam("command") Operation operation) throws Exception {
+        String result = applyCommandOverCustomer(customerId, operation);
         return ResponseEntity.ok(result);
 
     }
 
-    private String applyCommandOverCustomer(String customerId, Command command) throws Exception {
-        ActivateCustomerCommand activateCustomerCommand;
+    private String applyCommandOverCustomer(String customerId, Operation operation) throws Exception {
+        DoOperationOnCustomerCommand doOperationOnCustomerCommand;
         String result;
 
-        if (command.equals(Command.ACTIVATE)) {
-            activateCustomerCommand = new ActivateCustomerCommand(customerId, command);
-            result = commandGateway.sendAndWait(activateCustomerCommand);
+        if (Arrays.asList(Operation.values()).contains(operation)) {
+            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(customerId, operation);
+            result = commandGateway.sendAndWait(doOperationOnCustomerCommand);
         } else {
-            throw new Exception("customerNotFound");
+            throw new Exception("command not found");
         }
 
         return result;

@@ -1,12 +1,12 @@
 package ir.negah.bank.aggregate;
 
-import ir.negah.bank.command.ActivateCustomerCommand;
-import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
+import ir.negah.bank.command.DoOperationOnCustomerCommand;
 import ir.negah.bank.domain.CustomerStatus;
+import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.mapper.CustomerMapper;
-import ir.negah.bank.events.CustomerActivatedEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
+import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -67,11 +67,9 @@ public class CustomerAggregate {
     }
 
     @CommandHandler
-    public void handle (ActivateCustomerCommand command){
-        if (command.getCommand().equals(Command.ACTIVATE)){
-            CustomerActivatedEvent event = new CustomerActivatedEvent(command.getAggregateId());
-            AggregateLifecycle.apply(event);
-        }
+    public void handle(DoOperationOnCustomerCommand command) {
+        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getAggregateId(), command.getOperation());
+        AggregateLifecycle.apply(event);
     }
 
 
@@ -92,10 +90,15 @@ public class CustomerAggregate {
     }
 
 
-
     @EventSourcingHandler
-    public void on(CustomerActivatedEvent event){
+    public void on(DoOperationOnCustomerEvent event) {
         this.aggregateId = event.getAggregateId();
-        this.customerStatus = CustomerStatus.ACTIVE;
+        if (event.getOperation().equals(Operation.ACTIVATE)) {
+            this.customerStatus = CustomerStatus.ACTIVE;
+        } else if (event.getOperation().equals(Operation.CLOSURE)) {
+            this.customerStatus = CustomerStatus.CLOSED;
+        } else if (event.getOperation().equals(Operation.REJECTION)) {
+            this.customerStatus = CustomerStatus.REJECTED;
+        }
     }
 }

@@ -1,12 +1,13 @@
 package ir.negah.bank;
 
 import ir.negah.bank.aggregate.CustomerAggregate;
-import ir.negah.bank.command.ActivateCustomerCommand;
+import ir.negah.bank.command.DoOperationOnCustomerCommand;
 import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.domain.CustomerStatus;
+import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.mapper.CustomerMapper;
-import ir.negah.bank.events.CustomerActivatedEvent;
+import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -54,7 +55,7 @@ public class CustomerCommandApplicationTests {
 
     @Test
     void whenActivateCommandThenCustomerActivated(){
-        ActivateCustomerCommand activateCustomerCommand = new ActivateCustomerCommand(id.toString(), Command.ACTIVATE);
+        DoOperationOnCustomerCommand doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(id.toString(), Operation.ACTIVATE);
         CreateCustomerCommand createCustomerCommand = new CreateCustomerCommand("101324"
                 ,"110","/someWhere", CustomerStatus.PENDING,
                 "Haj Hamed","Abbaszadeh",
@@ -64,10 +65,10 @@ public class CustomerCommandApplicationTests {
 
         CustomerCreatedEvent createdEvent = customerMapper.createCommandToCreatedEvent(createCustomerCommand);
 
-        CustomerActivatedEvent event = new CustomerActivatedEvent(activateCustomerCommand.getAggregateId());
+        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(doOperationOnCustomerCommand.getAggregateId(),Operation.ACTIVATE);
 
         fixture.given(createdEvent)
-                .when(activateCustomerCommand)
+                .when(doOperationOnCustomerCommand)
                 .expectSuccessfulHandlerExecution()
                 .expectEvents(event);
     }

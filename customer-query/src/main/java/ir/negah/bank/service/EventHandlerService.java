@@ -4,17 +4,16 @@ import ir.negah.bank.domain.CustomerEntity;
 import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.dto.CustomerFullDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
-import ir.negah.bank.events.CustomerActivatedEvent;
+import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
-import ir.negah.bank.exception.RequestedNotFoundException;
 import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.repository.CustomerRepository;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,6 +23,7 @@ import java.util.Optional;
  */
 
 @Service
+@ProcessingGroup("customer")
 public record EventHandlerService(CustomerRepository customerRepository,
                                   QueryUpdateEmitter queryUpdateEmitter,
                                   CustomerMapper customerMapper) {
@@ -37,7 +37,7 @@ public record EventHandlerService(CustomerRepository customerRepository,
 
 
     @EventHandler
-    public void on(CustomerActivatedEvent event) {
+    public void on(DoOperationOnCustomerEvent event) {
         Optional<CustomerEntity> byAggregateId = customerRepository.findByAggregateId(event.getAggregateId());
         byAggregateId.get().setCustomerStatus(CustomerStatus.ACTIVE);
 

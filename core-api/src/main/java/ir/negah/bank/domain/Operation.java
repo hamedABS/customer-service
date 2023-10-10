@@ -1,4 +1,4 @@
-package ir.negah.bank.domain.enums;
+package ir.negah.bank.domain;
 
 /**
  * CREATED_BY abbaszadeh

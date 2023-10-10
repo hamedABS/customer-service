@@ -16,6 +16,4 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 public class BaseCommand {
     @TargetAggregateIdentifier
     private String aggregateId;
-
-    private Command command;
 }

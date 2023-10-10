@@ -27,6 +27,7 @@ public class AxonConfig {
                                 .build();
     }
 
+
     @Bean
     public EntityManagerProvider primaryEntityManagerProvider() {
         return new ContainerManagedEntityManagerProvider();
