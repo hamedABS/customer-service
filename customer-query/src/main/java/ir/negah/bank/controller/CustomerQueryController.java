@@ -2,13 +2,19 @@ package ir.negah.bank.controller;
 
 import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
 import ir.negah.bank.domain.dto.CustomerFullDTO;
+import ir.negah.bank.exception.OperationGeneralResponseDTO;
+import ir.negah.bank.exception.RequestedNotFoundException;
 import ir.negah.bank.query.GetAllCustomersQuery;
-import ir.negah.bank.query.GetCustomerQuery;
+import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.service.CustomerService;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.axonframework.queryhandling.SubscriptionQueryResult;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -35,10 +42,10 @@ import java.util.concurrent.CompletableFuture;
 public record CustomerQueryController(QueryGateway queryGateway,
                                       CustomerService customerService) {
 
-    @GetMapping("/{customerId}")
-    public ResponseEntity<CustomerFullDTO> getCustomer(@PathVariable(name = "customerId") Long customerId) {
-        GetCustomerQuery getCustomerQuery = new GetCustomerQuery(customerId);
-        CompletableFuture<CustomerFullDTO> query = queryGateway.query(getCustomerQuery, CustomerFullDTO.class);
+    @GetMapping("/{customerAggregateId}")
+    public ResponseEntity<CustomerFullDTO> getCustomer(@PathVariable(name = "customerAggregateId") String customerAggregateId) {
+        GetCustomerByIdQuery getCustomerByIdQuery = new GetCustomerByIdQuery(customerAggregateId);
+        CompletableFuture<CustomerFullDTO> query = queryGateway.query(getCustomerByIdQuery, CustomerFullDTO.class);
         return ResponseEntity.ok(query.join());
     }
 
@@ -62,5 +69,20 @@ public record CustomerQueryController(QueryGateway queryGateway,
             return ResponseEntity.badRequest().body(errors);
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{customerAggregateId}/watch",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<CustomerFullDTO> subscribeToCustomer(@PathVariable(name = "customerAggregateId") String customerAggregateId){
+        SubscriptionQueryResult<CustomerFullDTO, CustomerFullDTO> result = queryGateway.subscriptionQuery(new GetCustomerByIdQuery(customerAggregateId),
+                ResponseTypes.instanceOf(CustomerFullDTO.class),
+                ResponseTypes.instanceOf(CustomerFullDTO.class));
+
+        return result.initialResult().concatWith(result.updates());
+    }
+
+
+    @ExceptionHandler(RequestedNotFoundException.class)
+    public ResponseEntity<OperationGeneralResponseDTO> handleGeneralException(RequestedNotFoundException e) {
+        return new ResponseEntity<>(new OperationGeneralResponseDTO(e.getMessage(), e.getOperation()), HttpStatus.NOT_FOUND);
     }
 }

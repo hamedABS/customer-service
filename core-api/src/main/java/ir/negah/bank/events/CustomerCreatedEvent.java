@@ -21,7 +21,7 @@ import java.time.LocalDate;
 public class CustomerCreatedEvent {
 
 
-    private String customerId;
+    private String aggregateId;
 
     private String accountNumber;
 

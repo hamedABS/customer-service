@@ -15,7 +15,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @NoArgsConstructor
 public class BaseCommand {
     @TargetAggregateIdentifier
-    private String customerId;
+    private String aggregateId;
 
     private Command command;
 }

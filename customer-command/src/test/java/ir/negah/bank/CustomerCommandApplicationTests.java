@@ -42,7 +42,7 @@ public class CustomerCommandApplicationTests {
                 "Haj Hamed","Abbaszadeh",
                 "Haj Hamed Abbaszadeh", "Hamed Abbaszadeh","09385136659",
                 "hamed.abs1997@gmail.com", LocalDate.of(1997,7,12));
-        createCustomerCommand.setCustomerId(id.toString());
+        createCustomerCommand.setAggregateId(id.toString());
 
         CustomerCreatedEvent event = customerMapper.createCommandToCreatedEvent(createCustomerCommand);
 
@@ -60,11 +60,11 @@ public class CustomerCommandApplicationTests {
                 "Haj Hamed","Abbaszadeh",
                 "Haj Hamed Abbaszadeh", "Hamed Abbaszadeh","09385136659",
                 "hamed.abs1997@gmail.com", LocalDate.of(1997,7,12));
-        createCustomerCommand.setCustomerId(id.toString());
+        createCustomerCommand.setAggregateId(id.toString());
 
         CustomerCreatedEvent createdEvent = customerMapper.createCommandToCreatedEvent(createCustomerCommand);
 
-        CustomerActivatedEvent event = new CustomerActivatedEvent(activateCustomerCommand.getCustomerId(),"hamed.abs1997@gmail.com");
+        CustomerActivatedEvent event = new CustomerActivatedEvent(activateCustomerCommand.getAggregateId());
 
         fixture.given(createdEvent)
                 .when(activateCustomerCommand)

@@ -38,7 +38,7 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
     public String create(@RequestBody CustomerCreateRequestDTO requestDTO) {
         CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCommandTO(requestDTO);
 
-        createCustomerCommand.setCustomerId(UUID.randomUUID().toString());
+        createCustomerCommand.setAggregateId(UUID.randomUUID().toString());
         String result = commandGateway.sendAndWait(createCustomerCommand);
         return result;
     }

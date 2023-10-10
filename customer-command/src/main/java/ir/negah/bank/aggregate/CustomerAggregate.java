@@ -26,7 +26,9 @@ public class CustomerAggregate {
 
 
     @AggregateIdentifier
-    private String customerId;
+    private String aggregateId;
+
+    private Long id;
 
     private String accountNumber;
 
@@ -67,7 +69,7 @@ public class CustomerAggregate {
     @CommandHandler
     public void handle (ActivateCustomerCommand command){
         if (command.getCommand().equals(Command.ACTIVATE)){
-            CustomerActivatedEvent event = new CustomerActivatedEvent(command.getCustomerId(),this.email);
+            CustomerActivatedEvent event = new CustomerActivatedEvent(command.getAggregateId());
             AggregateLifecycle.apply(event);
         }
     }
@@ -76,7 +78,7 @@ public class CustomerAggregate {
     @EventSourcingHandler
     public void on(CustomerCreatedEvent event) {
         this.firstname = event.getFirstname();
-        this.customerId = event.getCustomerId();
+        this.aggregateId = event.getAggregateId();
         this.lastname = event.getLastname();
         this.fullName = event.getFullName();
         this.displayName = event.getDisplayName();
@@ -93,7 +95,7 @@ public class CustomerAggregate {
 
     @EventSourcingHandler
     public void on(CustomerActivatedEvent event){
-        this.customerId = event.getCustomerId();
+        this.aggregateId = event.getAggregateId();
         this.customerStatus = CustomerStatus.ACTIVE;
     }
 }

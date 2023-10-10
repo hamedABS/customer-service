@@ -10,6 +10,6 @@ import lombok.Data;
  */
 @AllArgsConstructor
 @Data
-public class GetCustomerQuery {
-    private Long customerId;
+public class GetCustomerByIdQuery {
+    private String aggregateId;
 }

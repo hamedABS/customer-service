@@ -30,6 +30,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CustomerEntity extends BaseEntity {
 
+    @Column(name = "aggregate_id", unique = true)
+    private String aggregateId;
+
     @Column(name = "account_no", length = 20, unique = true, nullable = false)
     private String accountNumber;
 

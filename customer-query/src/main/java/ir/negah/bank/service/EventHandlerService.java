@@ -2,13 +2,19 @@ package ir.negah.bank.service;
 
 import ir.negah.bank.domain.CustomerEntity;
 import ir.negah.bank.domain.CustomerStatus;
+import ir.negah.bank.domain.dto.CustomerFullDTO;
+import ir.negah.bank.domain.mapper.CustomerMapper;
 import ir.negah.bank.events.CustomerActivatedEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
+import ir.negah.bank.exception.RequestedNotFoundException;
+import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.repository.CustomerRepository;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,7 +24,9 @@ import java.util.Optional;
  */
 
 @Service
-public record EventHandlerService(CustomerRepository customerRepository) {
+public record EventHandlerService(CustomerRepository customerRepository,
+                                  QueryUpdateEmitter queryUpdateEmitter,
+                                  CustomerMapper customerMapper) {
 
     @EventHandler
     public void on(CustomerCreatedEvent event) {
@@ -30,9 +38,14 @@ public record EventHandlerService(CustomerRepository customerRepository) {
 
     @EventHandler
     public void on(CustomerActivatedEvent event) {
-        Optional<CustomerEntity> byEmail = customerRepository.findByEmail(event.getEmail());
-        byEmail.get().setCustomerStatus(CustomerStatus.ACTIVE);
-        customerRepository.save(byEmail.get());
+        Optional<CustomerEntity> byAggregateId = customerRepository.findByAggregateId(event.getAggregateId());
+        byAggregateId.get().setCustomerStatus(CustomerStatus.ACTIVE);
+
+        CustomerEntity saved = customerRepository.save(byAggregateId.get());
+        CustomerFullDTO customerFullDTO = customerMapper.entityToFullDTO(saved);
+
+        queryUpdateEmitter.emit(m ->
+                ((GetCustomerByIdQuery) m.getPayload()).getAggregateId().equals(event.getAggregateId()), customerFullDTO);
     }
 
 }
