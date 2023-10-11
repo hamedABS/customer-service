@@ -1,9 +1,14 @@
 package ir.negah.bank;
 
-import org.junit.jupiter.api.Test;
+import ir.negah.bank.domain.CustomerEntity;
+import ir.negah.bank.projection.CustomerProjection;
+import ir.negah.bank.service.CustomerEventHandler;
+import org.axonframework.eventhandling.gateway.EventGateway;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.UUID;
 
 /**
  * CREATED_BY abbaszadeh
@@ -17,9 +22,19 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class CustomerQueryApplicationTests {
 
     @Autowired
-    private WebTestClient webTestClient;
+    private CustomerProjection customerProjection;
 
-    @Test
-    void whenCreateCommandThenCustomerCreated(){
+    @Autowired
+    private EventGateway eventGateway;
+
+    @Autowired
+    private CustomerEventHandler customerEventHandler;
+
+    private String customerId;
+
+    @BeforeEach
+    void setUp(){
+        customerId = UUID.randomUUID().toString();
+        CustomerEntity customer = new CustomerEntity();
     }
 }

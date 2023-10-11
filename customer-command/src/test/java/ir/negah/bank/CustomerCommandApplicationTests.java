@@ -2,7 +2,6 @@ package ir.negah.bank;
 
 import ir.negah.bank.aggregate.CustomerAggregate;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
-import ir.negah.bank.command.Command;
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.Operation;

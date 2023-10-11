@@ -2,10 +2,12 @@ package ir.negah.bank.aggregate;
 
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
+import ir.negah.bank.command.UpdateCustomerCommand;
 import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.mapper.CustomerMapper;
 import ir.negah.bank.events.CustomerCreatedEvent;
+import ir.negah.bank.events.CustomerModifiedEvent;
 import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -13,6 +15,7 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
@@ -52,8 +55,12 @@ public class CustomerAggregate {
 
     private LocalDate dateOfBirth;
 
+    private CustomerMapper customerMapper;
 
-    public CustomerAggregate() {
+
+    @Autowired
+    public CustomerAggregate(CustomerMapper customerMapper) {
+        this.customerMapper = customerMapper;
     }
 
     @CommandHandler
@@ -70,6 +77,12 @@ public class CustomerAggregate {
     public void handle(DoOperationOnCustomerCommand command) {
         DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getAggregateId(), command.getOperation());
         AggregateLifecycle.apply(event);
+    }
+
+    @CommandHandler
+    public void handle(UpdateCustomerCommand command){
+        CustomerModifiedEvent modifiedEvent = customerMapper.updateCommandToModifiedEvent(command);
+        AggregateLifecycle.apply(modifiedEvent);
     }
 
 
@@ -100,5 +113,21 @@ public class CustomerAggregate {
         } else if (event.getOperation().equals(Operation.REJECTION)) {
             this.customerStatus = CustomerStatus.REJECTED;
         }
+    }
+
+    @EventSourcingHandler
+    public void on(CustomerModifiedEvent event) {
+        this.firstname = event.getFirstname();
+        this.aggregateId = event.getAggregateId();
+        this.lastname = event.getLastname();
+        this.fullName = event.getFullName();
+        this.displayName = event.getDisplayName();
+        this.accountNumber = event.getAccountNumber();
+        this.dateOfBirth = event.getDateOfBirth();
+        this.mobileNo = event.getMobileNo();
+        this.email = event.getEmail();
+        this.customerImage = event.getCustomerImage();
+        this.officeCode = event.getOfficeCode();
+        this.customerStatus = event.getCustomerStatus();
     }
 }

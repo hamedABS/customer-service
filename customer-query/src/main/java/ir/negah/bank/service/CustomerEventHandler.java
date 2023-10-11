@@ -4,6 +4,7 @@ import ir.negah.bank.domain.CustomerEntity;
 import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.dto.CustomerFullDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
+import ir.negah.bank.events.CustomerModifiedEvent;
 import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import ir.negah.bank.events.CustomerCreatedEvent;
 import ir.negah.bank.query.GetCustomerByIdQuery;
@@ -24,9 +25,9 @@ import java.util.Optional;
 
 @Service
 @ProcessingGroup("customer")
-public record EventHandlerService(CustomerRepository customerRepository,
-                                  QueryUpdateEmitter queryUpdateEmitter,
-                                  CustomerMapper customerMapper) {
+public record CustomerEventHandler(CustomerRepository customerRepository,
+                                   QueryUpdateEmitter queryUpdateEmitter,
+                                   CustomerMapper customerMapper) {
 
     @EventHandler
     public void on(CustomerCreatedEvent event) {
@@ -34,6 +35,16 @@ public record EventHandlerService(CustomerRepository customerRepository,
         BeanUtils.copyProperties(event, entity);
         customerRepository.save(entity);
     }
+
+    @EventHandler
+    public void on(CustomerModifiedEvent event) {
+        Optional<CustomerEntity> byAggregateId = customerRepository.findByAggregateId(event.getAggregateId());
+        CustomerEntity target = byAggregateId.get();
+        BeanUtils.copyProperties(event, target);
+        customerRepository.save(target);
+    }
+
+
 
 
     @EventHandler

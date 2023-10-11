@@ -2,8 +2,10 @@ package ir.negah.bank.controller;
 
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
+import ir.negah.bank.command.UpdateCustomerCommand;
 import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
+import ir.negah.bank.domain.dto.CustomerModificationRequestDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventsourcing.eventstore.EventStore;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,11 +40,19 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @PostMapping
     public String create(@RequestBody CustomerCreateRequestDTO requestDTO) {
-        CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCommandTO(requestDTO);
+        CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCreateCommand(requestDTO);
 
         createCustomerCommand.setAggregateId(UUID.randomUUID().toString());
         String result = commandGateway.sendAndWait(createCustomerCommand);
         return result;
+    }
+
+    @PutMapping("/{aggregateId}")
+    public String update(@PathVariable(name = "aggregateId") String aggregateId,
+                         @RequestBody CustomerModificationRequestDTO requestDTO) {
+        UpdateCustomerCommand updateCustomerCommand = customerMapper.modificationRequestDTOToUpdateCommand(requestDTO);
+        updateCustomerCommand.setAggregateId(aggregateId);
+        return commandGateway.sendAndWait(updateCustomerCommand);
     }
 
     @GetMapping(path = "/events/{aggregateId}")
@@ -61,7 +72,6 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
     private String applyCommandOverCustomer(String customerId, Operation operation) throws Exception {
         DoOperationOnCustomerCommand doOperationOnCustomerCommand;
         String result;
-
         if (Arrays.asList(Operation.values()).contains(operation)) {
             doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(customerId, operation);
             result = commandGateway.sendAndWait(doOperationOnCustomerCommand);
