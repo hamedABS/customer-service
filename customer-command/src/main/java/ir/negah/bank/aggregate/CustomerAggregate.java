@@ -1,12 +1,14 @@
 package ir.negah.bank.aggregate;
 
 import ir.negah.bank.command.CreateCustomerCommand;
+import ir.negah.bank.command.DeleteCustomerCommand;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
 import ir.negah.bank.command.UpdateCustomerCommand;
 import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.mapper.CustomerMapper;
 import ir.negah.bank.events.CustomerCreatedEvent;
+import ir.negah.bank.events.CustomerDeletedEvent;
 import ir.negah.bank.events.CustomerModifiedEvent;
 import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import org.axonframework.commandhandling.CommandHandler;
@@ -51,6 +53,8 @@ public class CustomerAggregate {
 
     private String mobileNo;
 
+    private Boolean deleted;
+
     private String email;
 
     private LocalDate dateOfBirth;
@@ -71,6 +75,12 @@ public class CustomerAggregate {
         CustomerCreatedEvent createdEvent = mapper.createCommandToCreatedEvent(createCustomerCommand);
         AggregateLifecycle.apply(createdEvent);
 
+    }
+
+    @CommandHandler
+    public void handle(DeleteCustomerCommand command){
+        CustomerDeletedEvent event = new CustomerDeletedEvent(command.getAggregateId());
+        AggregateLifecycle.apply(event);
     }
 
     @CommandHandler
@@ -100,6 +110,7 @@ public class CustomerAggregate {
         this.customerImage = event.getCustomerImage();
         this.officeCode = event.getOfficeCode();
         this.customerStatus = event.getCustomerStatus();
+        this.deleted = false;
     }
 
 
@@ -129,5 +140,10 @@ public class CustomerAggregate {
         this.customerImage = event.getCustomerImage();
         this.officeCode = event.getOfficeCode();
         this.customerStatus = event.getCustomerStatus();
+    }
+
+    @EventSourcingHandler
+    public void on(CustomerDeletedEvent event){
+        this.deleted = true;
     }
 }

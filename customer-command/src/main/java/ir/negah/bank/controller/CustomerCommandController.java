@@ -1,6 +1,7 @@
 package ir.negah.bank.controller;
 
 import ir.negah.bank.command.CreateCustomerCommand;
+import ir.negah.bank.command.DeleteCustomerCommand;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
 import ir.negah.bank.command.UpdateCustomerCommand;
 import ir.negah.bank.domain.Operation;
@@ -12,6 +13,7 @@ import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,19 +63,28 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     }
 
-    @PostMapping("/{customerId}")
-    public ResponseEntity<String> doCommand(@PathVariable(name = "customerId") String customerId,
+    @PostMapping("/{aggregateId}")
+    public ResponseEntity<String> doCommand(@PathVariable(name = "aggregateId") String aggregateId,
                                             @RequestParam("command") Operation operation) throws Exception {
-        String result = applyCommandOverCustomer(customerId, operation);
+        String result = applyCommandOverCustomer(aggregateId, operation);
         return ResponseEntity.ok(result);
 
     }
 
-    private String applyCommandOverCustomer(String customerId, Operation operation) throws Exception {
+    @DeleteMapping("/{aggregateId}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable(name = "aggregateId") String aggregateId){
+        DeleteCustomerCommand command = new DeleteCustomerCommand();
+        command.setAggregateId(aggregateId);
+        String result = commandGateway.sendAndWait(command);
+        return ResponseEntity.ok(result);
+    }
+
+
+    private String applyCommandOverCustomer(String aggregateId, Operation operation) throws Exception {
         DoOperationOnCustomerCommand doOperationOnCustomerCommand;
         String result;
         if (Arrays.asList(Operation.values()).contains(operation)) {
-            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(customerId, operation);
+            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(aggregateId, operation);
             result = commandGateway.sendAndWait(doOperationOnCustomerCommand);
         } else {
             throw new Exception("command not found");
