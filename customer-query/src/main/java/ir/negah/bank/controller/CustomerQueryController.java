@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/api/customers/query")
 public record CustomerQueryController(QueryGateway queryGateway,
                                       CustomerService customerService) {
 

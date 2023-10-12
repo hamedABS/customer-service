@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  */
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/api/customers/command")
 public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore) {
 
     private final static CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
