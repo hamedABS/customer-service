@@ -26,13 +26,8 @@ dependencies {
     implementation 'ir.negah.bank:common-module:2023.0.2'
     compileOnly 'org.projectlombok:lombok:1.18.28'
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-    runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
-    implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '18.0.0'
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.31'
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.3'
@@ -46,7 +41,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
     testImplementation "org.testcontainers:junit-jupiter:1.19.0"
     testImplementation 'org.axonframework:axon-test:4.5.15'
-    testImplementation "org.testcontainers:oracle-xe:1.19.0"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

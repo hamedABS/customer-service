@@ -11,6 +11,11 @@ repositories {
 
 dependencies {
     implementation project(":core-api")
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
+    implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '18.0.0'
     runtimeOnly 'org.postgresql:postgresql'
 }
 

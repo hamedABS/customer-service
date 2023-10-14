@@ -1,6 +1,5 @@
 package ir.negah.bank.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import ir.negah.bank.domain.CustomerStatus;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,7 +44,6 @@ public class CustomerModificationRequestDTO {
     @NotBlank(message = "email could not be null or empty")
     private String email;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "MM/dd/yyyy")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "MM/dd/yyyy")
     private LocalDate dateOfBirth;
 }
