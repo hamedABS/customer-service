@@ -1,0 +1,56 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: customer-command
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: axon-server
+      request-connect-timeout: 5000 # 5s
+      request-read-timeout: 5000 # 5s
+      fail-fast: false # In production, set to true
+      retry:
+        max-attempts: 6
+        initial-interval: 1000 # 1s
+        max-interval: 2000 # 2s
+        multiplier: 1.1
+#  datasource:
+#    username: root
+#    password: password
+#    url: jdbc:oracle:thin:@//localhost:47162/ORCLCDB.localdomain
+#    hikari:
+#      connection-timeout: 2000 #ms
+#      maximum-pool-size: 5
+#      driver-class-name: oracle.jdbc.OracleDriver
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    show-sql: false
+#  datasource:
+#    username: user
+#    password: password
+#    url: jdbc:postgresql://localhost:5432/polardb_catalog
+#    hikari:
+#      connection-timeout: 2000 #ms
+#      maximum-pool-size: 5
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#  flyway:
+#    enabled: false
+
+
+#axon:
+#  eventhandling:
+#    processors:
+#      name:
+#        mode: tracking
+#  axonserver:
+#    enabled: true
+#    servers: localhost
