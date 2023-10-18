@@ -11,6 +11,7 @@ import ir.negah.bank.events.CustomerCreatedEvent;
 import ir.negah.bank.events.CustomerDeletedEvent;
 import ir.negah.bank.events.CustomerModifiedEvent;
 import ir.negah.bank.events.DoOperationOnCustomerEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
  * TIME: ۱۰:۲۸
  */
 @Aggregate
+@Slf4j
 public class CustomerAggregate {
 
 
@@ -40,6 +42,8 @@ public class CustomerAggregate {
     private String officeCode;
 
     private String customerImage;
+
+    private String singImage;
 
     private CustomerStatus customerStatus;
 
@@ -62,6 +66,9 @@ public class CustomerAggregate {
     private CustomerMapper customerMapper;
 
 
+    public CustomerAggregate(){
+    }
+
     @Autowired
     public CustomerAggregate(CustomerMapper customerMapper) {
         this.customerMapper = customerMapper;
@@ -70,7 +77,7 @@ public class CustomerAggregate {
     @CommandHandler
     public CustomerAggregate(CreateCustomerCommand createCustomerCommand) {
         //perform all validations ....
-
+        log.debug(CreateCustomerCommand.class.getSimpleName() + " Processing ...");
         CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
         CustomerCreatedEvent createdEvent = mapper.createCommandToCreatedEvent(createCustomerCommand);
         AggregateLifecycle.apply(createdEvent);
@@ -79,18 +86,23 @@ public class CustomerAggregate {
 
     @CommandHandler
     public void handle(DeleteCustomerCommand command){
+        log.debug(DeleteCustomerCommand.class.getSimpleName() + " Processing ...");
+
         CustomerDeletedEvent event = new CustomerDeletedEvent(command.getAggregateId());
         AggregateLifecycle.apply(event);
     }
 
     @CommandHandler
     public void handle(DoOperationOnCustomerCommand command) {
+        log.debug(DoOperationOnCustomerCommand.class.getSimpleName() + " Processing ...");
+
         DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getAggregateId(), command.getOperation());
         AggregateLifecycle.apply(event);
     }
 
     @CommandHandler
     public void handle(UpdateCustomerCommand command){
+        log.debug(UpdateCustomerCommand.class.getSimpleName() + " Processing ...");
         CustomerModifiedEvent modifiedEvent = customerMapper.updateCommandToModifiedEvent(command);
         AggregateLifecycle.apply(modifiedEvent);
     }
@@ -108,6 +120,7 @@ public class CustomerAggregate {
         this.mobileNo = event.getMobileNo();
         this.email = event.getEmail();
         this.customerImage = event.getCustomerImage();
+        this.singImage = event.getSignImage();
         this.officeCode = event.getOfficeCode();
         this.customerStatus = event.getCustomerStatus();
         this.deleted = false;
@@ -138,6 +151,7 @@ public class CustomerAggregate {
         this.mobileNo = event.getMobileNo();
         this.email = event.getEmail();
         this.customerImage = event.getCustomerImage();
+        this.singImage = event.getSignImage();
         this.officeCode = event.getOfficeCode();
         this.customerStatus = event.getCustomerStatus();
     }

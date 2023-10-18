@@ -24,6 +24,9 @@ public class CustomerCreateRequestDTO {
     @NotBlank(message = "customerImage could not be null or empty")
     private String customerImage;
 
+    @NotBlank(message = "signImage could not be null or empty")
+    private String signImage;
+
     @NotBlank(message = "customerStatus could not be null or empty")
     private CustomerStatus customerStatus;
 
@@ -44,6 +47,6 @@ public class CustomerCreateRequestDTO {
     @NotBlank(message = "email could not be null or empty")
     private String email;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE,pattern = "MM/dd/yyyy")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "MM/dd/yyyy")
     private LocalDate dateOfBirth;
 }

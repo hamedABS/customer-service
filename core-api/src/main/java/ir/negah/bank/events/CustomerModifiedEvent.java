@@ -29,6 +29,8 @@ public class CustomerModifiedEvent {
 
     private String customerImage;
 
+    private String signImage;
+
     private CustomerStatus customerStatus;
 
     private String firstname;

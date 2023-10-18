@@ -38,4 +38,7 @@ public class OperationDoneByWhenWhy extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "why_id")
     private CodeValue why;
+
+    @ManyToOne
+    private CustomerEntity customer;
 }

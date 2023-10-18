@@ -5,29 +5,29 @@ spring:
     name: customer-query
   lifecycle:
     timeout-per-shutdown-phase: 15s
-  config:
-    import: "optional:configserver:"
-  cloud:
-    config:
-      uri: http://localhost:8888
-      request-connect-timeout: 5000 # 5s
-      request-read-timeout: 5000 # 5s
-      fail-fast: false # In production, set to true
-      retry:
-        max-attempts: 6
-        initial-interval: 1000 # 1s
-        max-interval: 2000 # 2s
-        multiplier: 1.1
+#  config:
+#    import: "optional:configserver:"
+#  cloud:
+#    config:
+#      uri: http://config-service:8888
+#      request-connect-timeout: 5000 # 5s
+#      request-read-timeout: 5000 # 5s
+#      fail-fast: false # In production, set to true
+#      retry:
+#        max-attempts: 6
+#        initial-interval: 1000 # 1s
+#        max-interval: 2000 # 2s
+#        multiplier: 1.1
   datasource:
-    username: user
+    username: kdbs_user
     password: password
-    url: jdbc:postgresql://localhost:5433/kdbs_customer_query
+    url: jdbc:postgresql://postgres:5432/kdbs_customer_query
     hikari:
       connection-timeout: 2000 #ms
       maximum-pool-size: 5
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: false
   flyway:
     enabled: false

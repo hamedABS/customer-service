@@ -5,19 +5,19 @@ spring:
     name: customer-command
   lifecycle:
     timeout-per-shutdown-phase: 15s
-  config:
-    import: "optional:configserver:"
-  cloud:
-    config:
-      uri: axon-server
-      request-connect-timeout: 5000 # 5s
-      request-read-timeout: 5000 # 5s
-      fail-fast: false # In production, set to true
-      retry:
-        max-attempts: 6
-        initial-interval: 1000 # 1s
-        max-interval: 2000 # 2s
-        multiplier: 1.1
+#  config:
+#    import: "optional:configserver:"
+#  cloud:
+#    config:
+#      uri: axon-server
+#      request-connect-timeout: 5000 # 5s
+#      request-read-timeout: 5000 # 5s
+#      fail-fast: false # In production, set to true
+#      retry:
+#        max-attempts: 6
+#        initial-interval: 1000 # 1s
+#        max-interval: 2000 # 2s
+#        multiplier: 1.1
 #  datasource:
 #    username: root
 #    password: password
@@ -45,12 +45,11 @@ spring:
 #  flyway:
 #    enabled: false
 
-
-#axon:
-#  eventhandling:
-#    processors:
-#      name:
-#        mode: tracking
-#  axonserver:
-#    enabled: true
-#    servers: localhost
+axon:
+  eventhandling:
+    processors:
+      name:
+        mode: tracking
+  axonserver:
+    enabled: true
+    servers: axonserver
