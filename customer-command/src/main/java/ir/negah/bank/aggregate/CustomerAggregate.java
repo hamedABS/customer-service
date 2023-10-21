@@ -66,7 +66,7 @@ public class CustomerAggregate {
     private CustomerMapper customerMapper;
 
 
-    public CustomerAggregate(){
+    public CustomerAggregate() {
     }
 
     @Autowired
@@ -85,7 +85,7 @@ public class CustomerAggregate {
     }
 
     @CommandHandler
-    public void handle(DeleteCustomerCommand command){
+    public void handle(DeleteCustomerCommand command) {
         log.debug(DeleteCustomerCommand.class.getSimpleName() + " Processing ...");
 
         CustomerDeletedEvent event = new CustomerDeletedEvent(command.getAggregateId());
@@ -96,12 +96,13 @@ public class CustomerAggregate {
     public void handle(DoOperationOnCustomerCommand command) {
         log.debug(DoOperationOnCustomerCommand.class.getSimpleName() + " Processing ...");
 
-        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getAggregateId(), command.getOperation());
+        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getAggregateId(),
+                command.getOperation(), command.getWhen());
         AggregateLifecycle.apply(event);
     }
 
     @CommandHandler
-    public void handle(UpdateCustomerCommand command){
+    public void handle(UpdateCustomerCommand command) {
         log.debug(UpdateCustomerCommand.class.getSimpleName() + " Processing ...");
         CustomerModifiedEvent modifiedEvent = customerMapper.updateCommandToModifiedEvent(command);
         AggregateLifecycle.apply(modifiedEvent);
@@ -157,7 +158,7 @@ public class CustomerAggregate {
     }
 
     @EventSourcingHandler
-    public void on(CustomerDeletedEvent event){
+    public void on(CustomerDeletedEvent event) {
         this.deleted = true;
     }
 }

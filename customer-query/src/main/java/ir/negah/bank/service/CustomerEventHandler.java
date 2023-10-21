@@ -3,6 +3,7 @@ package ir.negah.bank.service;
 import ir.negah.bank.domain.CustomerEntity;
 import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.Operation;
+import ir.negah.bank.domain.OperationDoneByWhenWhy;
 import ir.negah.bank.domain.dto.CustomerFullDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
 import ir.negah.bank.events.CustomerCreatedEvent;
@@ -11,14 +12,13 @@ import ir.negah.bank.events.CustomerModifiedEvent;
 import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.repository.CustomerRepository;
+import ir.negah.bank.repository.OperationDoneByWhenWhyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * CREATED_BY abbaszadeh
@@ -30,6 +30,7 @@ import java.util.Optional;
 @ProcessingGroup("customer")
 @Slf4j
 public record CustomerEventHandler(CustomerRepository customerRepository,
+                                   OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository,
                                    QueryUpdateEmitter queryUpdateEmitter,
                                    CustomerMapper customerMapper) {
 
@@ -65,6 +66,15 @@ public record CustomerEventHandler(CustomerRepository customerRepository,
         }
 
         CustomerEntity saved = customerRepository.save(byAggregateId);
+        OperationDoneByWhenWhy operationDoneByWhenWhy = new OperationDoneByWhenWhy();
+        operationDoneByWhenWhy.setDate(event.getWhen());
+        operationDoneByWhenWhy.setOperation(event.getOperation());
+        //ToDo: set by who?
+        operationDoneByWhenWhy.setBy("currently nobody");
+        //ToDo: why??
+        operationDoneByWhenWhy.setWhy(null);
+
+        operationDoneByWhenWhyRepository.save(operationDoneByWhenWhy);
         CustomerFullDTO customerFullDTO = customerMapper.entityToFullDTO(saved);
 
         queryUpdateEmitter.emit(m ->

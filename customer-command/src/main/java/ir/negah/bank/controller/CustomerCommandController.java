@@ -7,7 +7,9 @@ import ir.negah.bank.command.UpdateCustomerCommand;
 import ir.negah.bank.domain.Operation;
 import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
 import ir.negah.bank.domain.dto.CustomerModificationRequestDTO;
+import ir.negah.bank.domain.dto.DoOperationRequestDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.mapstruct.factory.Mappers;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -36,6 +39,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/customers/command")
+@Slf4j
 public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore) {
 
     private final static CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
@@ -43,10 +47,9 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
     @PostMapping
     public String create(@RequestBody CustomerCreateRequestDTO requestDTO) {
         CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCreateCommand(requestDTO);
-
+        log.info(CustomerCreateRequestDTO.class.getSimpleName() + " Processing ...");
         createCustomerCommand.setAggregateId(UUID.randomUUID().toString());
-        String result = commandGateway.sendAndWait(createCustomerCommand);
-        return result;
+        return commandGateway.sendAndWait(createCustomerCommand);
     }
 
     @PutMapping("/{aggregateId}")
@@ -65,14 +68,14 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @PostMapping("/{aggregateId}")
     public ResponseEntity<String> doCommand(@PathVariable(name = "aggregateId") String aggregateId,
-                                            @RequestParam("command") Operation operation) throws Exception {
-        String result = applyCommandOverCustomer(aggregateId, operation);
+                                            @RequestBody DoOperationRequestDTO doOperationRequestDTO) throws Exception {
+        String result = applyCommandOverCustomer(aggregateId, doOperationRequestDTO.operation(),doOperationRequestDTO.when());
         return ResponseEntity.ok(result);
 
     }
 
     @DeleteMapping("/{aggregateId}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable(name = "aggregateId") String aggregateId){
+    public ResponseEntity<String> deleteCustomer(@PathVariable(name = "aggregateId") String aggregateId) {
         DeleteCustomerCommand command = new DeleteCustomerCommand();
         command.setAggregateId(aggregateId);
         String result = commandGateway.sendAndWait(command);
@@ -80,11 +83,11 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
     }
 
 
-    private String applyCommandOverCustomer(String aggregateId, Operation operation) throws Exception {
+    private String applyCommandOverCustomer(String aggregateId, Operation operation, LocalDateTime when) throws Exception {
         DoOperationOnCustomerCommand doOperationOnCustomerCommand;
         String result;
         if (Arrays.asList(Operation.values()).contains(operation)) {
-            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(aggregateId, operation);
+            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(aggregateId, operation,when);
             result = commandGateway.sendAndWait(doOperationOnCustomerCommand);
         } else {
             throw new Exception("command not found");
