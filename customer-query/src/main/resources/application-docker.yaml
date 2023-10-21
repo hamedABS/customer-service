@@ -33,8 +33,10 @@ spring:
     enabled: false
 
 
-#axon:
-#  eventhandling:
-#    processors:
-#      name:
-#        mode: tracking
+springdoc:
+  swagger-ui:
+    path: /openapi/swagger-ui.html
+  api-docs:
+    path: /openapi/v3/api-docs
+  packages-to-scan: ir.negah.bank
+  pathsToMatch: /**

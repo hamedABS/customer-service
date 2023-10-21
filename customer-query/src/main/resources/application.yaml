@@ -27,14 +27,16 @@ spring:
       maximum-pool-size: 5
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: false
   flyway:
     enabled: false
 
+springdoc:
+  swagger-ui:
+    path: /openapi/swagger-ui.html
+  api-docs:
+    path: /openapi/v3/api-docs
+  packages-to-scan: ir.negah.bank
+  pathsToMatch: /**
 
-#axon:
-#  eventhandling:
-#    processors:
-#      name:
-#        mode: tracking

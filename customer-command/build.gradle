@@ -16,6 +16,7 @@ dependencies {
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
     implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '18.0.0'
+    implementation "org.springdoc:springdoc-openapi-ui:1.6.12"
     runtimeOnly 'org.postgresql:postgresql'
 }
 
