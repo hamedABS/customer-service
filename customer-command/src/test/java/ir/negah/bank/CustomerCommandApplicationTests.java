@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -38,7 +39,7 @@ public class CustomerCommandApplicationTests {
     @Test
     void whenCreateCommandThenCustomerCreated(){
         CreateCustomerCommand createCustomerCommand = new CreateCustomerCommand("101324"
-        ,"110","/someWhere", CustomerStatus.PENDING,
+        ,"110","/someWhere","/anyWhere", CustomerStatus.PENDING,
                 "Haj Hamed","Abbaszadeh",
                 "Haj Hamed Abbaszadeh", "Hamed Abbaszadeh","09385136659",
                 "hamed.abs1997@gmail.com", LocalDate.of(1997,7,12));
@@ -54,9 +55,9 @@ public class CustomerCommandApplicationTests {
 
     @Test
     void whenActivateCommandThenCustomerActivated(){
-        DoOperationOnCustomerCommand doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(id.toString(), Operation.ACTIVATE);
+        DoOperationOnCustomerCommand doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(id.toString(), Operation.ACTIVATE, LocalDateTime.now());
         CreateCustomerCommand createCustomerCommand = new CreateCustomerCommand("101324"
-                ,"110","/someWhere", CustomerStatus.PENDING,
+                ,"110","/someWhere","anyWhere", CustomerStatus.PENDING,
                 "Haj Hamed","Abbaszadeh",
                 "Haj Hamed Abbaszadeh", "Hamed Abbaszadeh","09385136659",
                 "hamed.abs1997@gmail.com", LocalDate.of(1997,7,12));
@@ -64,7 +65,7 @@ public class CustomerCommandApplicationTests {
 
         CustomerCreatedEvent createdEvent = customerMapper.createCommandToCreatedEvent(createCustomerCommand);
 
-        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(doOperationOnCustomerCommand.getAggregateId(),Operation.ACTIVATE);
+        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(doOperationOnCustomerCommand.getAggregateId(),Operation.ACTIVATE,LocalDateTime.now());
 
         fixture.given(createdEvent)
                 .when(doOperationOnCustomerCommand)

@@ -54,3 +54,11 @@ spring:
 #  axonserver:
 #    enabled: true
 #    servers: localhost
+
+
+logging:
+  level:
+    ir.negah.bank: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+    file: "app.log"

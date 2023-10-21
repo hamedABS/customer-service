@@ -3,6 +3,8 @@ package ir.negah.bank.command;
 import ir.negah.bank.domain.Operation;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 /**
  * CREATED_BY abbaszadeh
  * DATE: ۲۰۲۳/۱۰/۲
@@ -11,10 +13,12 @@ import lombok.Getter;
 
 @Getter
 public class DoOperationOnCustomerCommand extends BaseCommand {
-    private Operation operation;
+    private final Operation operation;
+    private final LocalDateTime when;
 
-    public DoOperationOnCustomerCommand(String customerId, Operation operation) {
+    public DoOperationOnCustomerCommand(String customerId, Operation operation,LocalDateTime when) {
         super(customerId);
         this.operation = operation;
+        this.when = when;
     }
 }
