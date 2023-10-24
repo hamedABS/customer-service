@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(":core-api")
+    implementation 'ir.negah.bank:clients:1.0-SNAPSHOT'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
