@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-/**
+/**kdbs-postgres
  * CREATED_BY abbaszadeh
  * DATE: ۲۰۲۳/۹/۲۷
  * TIME: ۱۰:۱۳
@@ -35,9 +35,11 @@ public class CreateCustomerCommand extends BaseCommand {
 
     private String displayName;
 
-    private String mobileNo;
+    private String mobileNumber;
 
     private String email;
+
+    private String nationalCode;
 
     private LocalDate dateOfBirth;
 }

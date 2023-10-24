@@ -1,5 +1,7 @@
 package ir.negah.bank.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import ir.negah.bank.clients.civilRegistry.domain.ShahkarRequestDTO;
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.command.DeleteCustomerCommand;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
@@ -9,6 +11,8 @@ import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
 import ir.negah.bank.domain.dto.CustomerModificationRequestDTO;
 import ir.negah.bank.domain.dto.DoOperationRequestDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
+import ir.negah.bank.exception.MobileVerificationMismatchException;
+import ir.negah.bank.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventsourcing.eventstore.EventStore;
@@ -23,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -40,16 +43,19 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/api/customers/command")
 @Slf4j
-public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore) {
+public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore,CustomerService customerService) {
 
     private final static CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
 
     @PostMapping
-    public String create(@RequestBody CustomerCreateRequestDTO requestDTO) {
+    public String create(@RequestBody CustomerCreateRequestDTO requestDTO) throws JsonProcessingException {
+        ShahkarRequestDTO shahkarRequestDTO = new ShahkarRequestDTO(requestDTO.getNationalCode(), 0, requestDTO.getMobileNumber());
+        customerService.mobileVerification(shahkarRequestDTO);
         CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCreateCommand(requestDTO);
         log.info(CustomerCreateRequestDTO.class.getSimpleName() + " Processing ...");
         createCustomerCommand.setAggregateId(UUID.randomUUID().toString());
         return commandGateway.sendAndWait(createCustomerCommand);
+
     }
 
     @PutMapping("/{aggregateId}")
@@ -98,7 +104,13 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity exceptionHandler(Exception e) {
-        return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        ResponseEntity responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
     }
 
+    @ExceptionHandler(MobileVerificationMismatchException.class)
+    public ResponseEntity exceptionHandler(MobileVerificationMismatchException e) {
+        ResponseEntity responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
 }

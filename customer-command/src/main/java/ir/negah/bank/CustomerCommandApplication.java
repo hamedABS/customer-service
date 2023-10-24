@@ -2,6 +2,7 @@ package ir.negah.bank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * CREATED_BY abbaszadeh
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@EnableFeignClients
 public class CustomerCommandApplication {
     public static void main(String[] args) {
         SpringApplication.run(CustomerCommandApplication.class, args);
