@@ -74,9 +74,12 @@ public record CustomerQueryController(QueryGateway queryGateway,
                                                               @RequestParam(value = "createdDateTo", required = false) @DateTimeFormat(pattern = "MM/dd/yyyy") LocalDateTime createdDateTo,
                                                               @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                               @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) throws ClassNotFoundException {
-        GetAllCustomersQuery getAllCustomersQuery = new GetAllCustomersQuery(firstname,lastname,createdDateFrom,createdDateTo,page,size);
+        GetAllCustomersQuery getAllCustomersQuery = new GetAllCustomersQuery(firstname, lastname, officeCode, customerStatus, nationalCode, birtCertificateNumber, business,
+                mobileNumber, email, placeOfBirth, occupationType, occupation, gender, customerType, maritalStatus, customerClassification, dateOfBirthFrom, dateOfBirthTo,
+                createdDateFrom, createdDateTo, page, size);
         CompletableFuture<List<CustomerFullDTO>> query = queryGateway.query(getAllCustomersQuery,
                 ResponseTypes.multipleInstancesOf(CustomerFullDTO.class));
+
         return ResponseEntity.ok(query.join());
     }
 
@@ -89,8 +92,8 @@ public record CustomerQueryController(QueryGateway queryGateway,
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value = "/{customerAggregateId}/watch",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<CustomerFullDTO> subscribeToCustomer(@PathVariable(name = "customerAggregateId") String customerAggregateId){
+    @GetMapping(value = "/{customerAggregateId}/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<CustomerFullDTO> subscribeToCustomer(@PathVariable(name = "customerAggregateId") String customerAggregateId) {
         SubscriptionQueryResult<CustomerFullDTO, CustomerFullDTO> result = queryGateway.subscriptionQuery(new GetCustomerByIdQuery(customerAggregateId),
                 ResponseTypes.instanceOf(CustomerFullDTO.class),
                 ResponseTypes.instanceOf(CustomerFullDTO.class));

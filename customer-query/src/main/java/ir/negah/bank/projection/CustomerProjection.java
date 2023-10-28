@@ -1,23 +1,19 @@
 package ir.negah.bank.projection;
 
 import ir.negah.bank.domain.CustomerEntity;
-import ir.negah.bank.domain.CustomerStatus;
 import ir.negah.bank.domain.dto.CustomerFullDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
-import ir.negah.bank.exception.OperationGeneralResponseDTO;
 import ir.negah.bank.exception.RequestedNotFoundException;
 import ir.negah.bank.query.GetAllCustomersQuery;
 import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.repository.CustomerRepository;
-import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,16 +45,31 @@ public class CustomerProjection {
 
     @QueryHandler
     public Page<CustomerFullDTO> handle(GetAllCustomersQuery query) {
-        Pageable pageable = PageRequest.of(query.page(), query.size());
-        Page<CustomerEntity> allCustomers = customerRepository.findAllByFirstnameLikeAndLastnameLikeAndCreatedDateIsBetween(
-                query.firstname(),
-                query.lastname(),
-                query.createdDateFrom() == null ? LocalDateTime.of(1970, 1, 1,1,1,1) : query.createdDateFrom(),
-                query.createdDateTo() == null ? LocalDateTime.now() : query.createdDateTo(),
+        Pageable pageable = PageRequest.of(query.getPage(), query.getSize());
+        Page<CustomerEntity> allCustomers = customerRepository.findAllByFirstnameLikeAndLastnameLikeAndCreatedDateIsBetweenAndOtherFilters(
+                query.getFirstname(),
+                query.getLastname(),
+                query.getOfficeCode(),
+                query.getCustomerStatus(),
+                query.getNationalCode(),
+                query.getBirtCertificateNumber(),
+                query.getBusiness(),
+                query.getMobileNumber(),
+                query.getEmail(),
+                query.getGender(),
+                query.getPlaceOfBirth(),
+                query.getOccupationType(),
+                query.getOccupation(),
+                query.getMaritalStatus(),
+                query.getCustomerType(),
+                query.getCustomerClassification(),
+                query.getDateOfBirthFrom() == null ? LocalDate.of(1970, 1, 11) : query.getDateOfBirthFrom(),
+                query.getDateOfBirthTo() == null ? LocalDate.now() : query.getDateOfBirthTo(),
+                query.getCreatedDateTimeFrom() == null ? LocalDateTime.of(1970, 1, 1, 1, 1, 1) : query.getCreatedDateTimeFrom(),
+                query.getCreatedDateTimeTo() == null ? LocalDateTime.now() : query.getCreatedDateTimeTo(),
                 pageable);
-        Page<CustomerFullDTO> result = allCustomers.map(customerEntity -> customerMapper.entityToFullDTO(customerEntity));
 
-        return result;
+        return allCustomers.map(customerEntity -> customerMapper.entityToFullDTO(customerEntity));
     }
 
    /* @ExceptionHandler()

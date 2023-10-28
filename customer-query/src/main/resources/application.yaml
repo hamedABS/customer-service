@@ -21,14 +21,14 @@ spring:
   datasource:
     username: user
     password: password
-    url: jdbc:postgresql://localhost:5433/kdbs_customer_query
+    url: jdbc:postgresql://localhost:5432/kdbs_customer_query
     hikari:
       connection-timeout: 2000 #ms
       maximum-pool-size: 5
   jpa:
     hibernate:
-      ddl-auto: create
-    show-sql: false
+      ddl-auto: update
+    show-sql: true
   flyway:
     enabled: false
 

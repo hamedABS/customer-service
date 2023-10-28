@@ -9,7 +9,7 @@ import ir.negah.bank.domain.dto.ShahkarResponseDTO;
  * TIME: ۱۸:۰۵
  */
 
-public interface CustomerService {
+public interface CustomerCommandService {
 
     ShahkarResponseDTO validateMobileNumber(MobileVerificationRequestDTO requestDTO);
 }
