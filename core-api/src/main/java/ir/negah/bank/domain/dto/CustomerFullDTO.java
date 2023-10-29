@@ -39,5 +39,7 @@ public class CustomerFullDTO {
 
     private String email;
 
+    private String nationalCode;
+
     private LocalDate dateOfBirth;
 }

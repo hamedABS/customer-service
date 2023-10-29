@@ -118,7 +118,7 @@ public class CustomerAggregate {
         this.displayName = event.getDisplayName();
         this.accountNumber = event.getAccountNumber();
         this.dateOfBirth = event.getDateOfBirth();
-        this.mobileNo = event.getMobileNo();
+        this.mobileNo = event.getMobileNumber();
         this.email = event.getEmail();
         this.customerImage = event.getCustomerImage();
         this.singImage = event.getSignImage();

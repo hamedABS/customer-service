@@ -41,9 +41,11 @@ public class CustomerCreatedEvent {
 
     private String displayName;
 
-    private String mobileNo;
+    private String mobileNumber;
 
     private String email;
+
+    private String nationalCode;
 
     private LocalDate dateOfBirth;
 

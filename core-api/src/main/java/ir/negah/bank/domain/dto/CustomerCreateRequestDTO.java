@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 /**
@@ -46,6 +47,9 @@ public class CustomerCreateRequestDTO {
 
     @NotBlank(message = "email could not be null or empty")
     private String email;
+
+    @NotBlank(message = "nationalCode could not be zero or empty")
+    private String nationalCode;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "MM/dd/yyyy")
     private LocalDate dateOfBirth;

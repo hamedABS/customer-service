@@ -2,8 +2,7 @@ package ir.negah.bank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * CREATED_BY abbaszadeh
@@ -12,15 +11,10 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @SpringBootApplication
+@EnableFeignClients
 public class CustomerCommandApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(CustomerCommandApplication.class, args);
-    }
-
-    @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 }
 

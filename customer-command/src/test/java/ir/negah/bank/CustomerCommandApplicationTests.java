@@ -42,7 +42,7 @@ public class CustomerCommandApplicationTests {
         ,"110","/someWhere","/anyWhere", CustomerStatus.PENDING,
                 "Haj Hamed","Abbaszadeh",
                 "Haj Hamed Abbaszadeh", "Hamed Abbaszadeh","09385136659",
-                "hamed.abs1997@gmail.com", LocalDate.of(1997,7,12));
+                "hamed.abs1997@gmail.com", "0010398449",LocalDate.of(1997,7,12));
         createCustomerCommand.setAggregateId(id.toString());
 
         CustomerCreatedEvent event = customerMapper.createCommandToCreatedEvent(createCustomerCommand);
@@ -60,7 +60,7 @@ public class CustomerCommandApplicationTests {
                 ,"110","/someWhere","anyWhere", CustomerStatus.PENDING,
                 "Haj Hamed","Abbaszadeh",
                 "Haj Hamed Abbaszadeh", "Hamed Abbaszadeh","09385136659",
-                "hamed.abs1997@gmail.com", LocalDate.of(1997,7,12));
+                "hamed.abs1997@gmail.com", "0010398449",LocalDate.of(1997,7,12));
         createCustomerCommand.setAggregateId(id.toString());
 
         CustomerCreatedEvent createdEvent = customerMapper.createCommandToCreatedEvent(createCustomerCommand);
