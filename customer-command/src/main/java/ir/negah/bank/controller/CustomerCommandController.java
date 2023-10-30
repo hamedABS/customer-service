@@ -1,7 +1,10 @@
 package ir.negah.bank.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import ir.negah.bank.clients.centralBank.domain.ChequeRequestDTO;
+import ir.negah.bank.clients.civilRegistry.domain.CivilRegistrationResponseDTO;
 import ir.negah.bank.clients.civilRegistry.domain.ShahkarRequestDTO;
+import ir.negah.bank.clients.newsPaper.domain.NewsRequestDTO;
 import ir.negah.bank.command.CreateCustomerCommand;
 import ir.negah.bank.command.DeleteCustomerCommand;
 import ir.negah.bank.command.DoOperationOnCustomerCommand;
@@ -13,6 +16,9 @@ import ir.negah.bank.domain.dto.DoOperationRequestDTO;
 import ir.negah.bank.domain.mapper.CustomerMapper;
 import ir.negah.bank.exception.MobileVerificationMismatchException;
 import ir.negah.bank.service.CustomerService;
+import ir.negah.bank.util.com.github.eloyzone.jalalicalendar.DateConverter;
+import ir.negah.bank.util.com.github.eloyzone.jalalicalendar.JalaliDate;
+import ir.negah.bank.util.com.github.eloyzone.jalalicalendar.JalaliDateFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventsourcing.eventstore.EventStore;
@@ -43,14 +49,34 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/api/customers/command")
 @Slf4j
-public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore,CustomerService customerService) {
+public record CustomerCommandController(CommandGateway commandGateway, EventStore eventStore,
+                                        CustomerService customerService) {
 
     private final static CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
 
     @PostMapping
     public String create(@RequestBody CustomerCreateRequestDTO requestDTO) throws JsonProcessingException {
         ShahkarRequestDTO shahkarRequestDTO = new ShahkarRequestDTO(requestDTO.getNationalCode(), 0, requestDTO.getMobileNumber());
+        ChequeRequestDTO chequeRequestDTO = new ChequeRequestDTO(1, "1378125411");
+        NewsRequestDTO newsRequestDTO = new NewsRequestDTO("0", "123456789");
         customerService.mobileVerification(shahkarRequestDTO);
+        customerService.estelam(chequeRequestDTO);
+        DateConverter dateConverter = new DateConverter();
+        JalaliDate jalaliDate2 = dateConverter.gregorianToJalali(requestDTO.getDateOfBirth().getYear(), requestDTO.getDateOfBirth().getMonthValue(), requestDTO.getDateOfBirth().getDayOfMonth());
+        String[] split = jalaliDate2.toString().split("-");
+        if (split[1].length() == 1) {
+            split[1] = "0".concat(split[1]);
+        }
+        if (split[2].length() == 1) {
+            split[2] = "0".concat(split[2]);
+        }
+        String joinedJalaliDate = String.join("", split[0], split[1], split[2]);
+//        String result2 = jalaliDate2.format(new JalaliDateFormatter("yyyyMMdd", JalaliDateFormatter.FORMAT_IN_PERSIAN));
+
+        CivilRegistrationResponseDTO civilRegistrationResponseDTO =customerService.getPersonalInfo(Long.parseLong(joinedJalaliDate), requestDTO.getNationalCode());
+        customerService.getPhotoByNationalCode(requestDTO.getCardSerialNo(), requestDTO.getNationalCode());
+        customerService.getAddress(requestDTO.getPostalCode());
+        customerService.getNews(newsRequestDTO);
         CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCreateCommand(requestDTO);
         log.info(CustomerCreateRequestDTO.class.getSimpleName() + " Processing ...");
         createCustomerCommand.setAggregateId(UUID.randomUUID().toString());
@@ -75,7 +101,7 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
     @PostMapping("/{aggregateId}")
     public ResponseEntity<String> doCommand(@PathVariable(name = "aggregateId") String aggregateId,
                                             @RequestBody DoOperationRequestDTO doOperationRequestDTO) throws Exception {
-        String result = applyCommandOverCustomer(aggregateId, doOperationRequestDTO.operation(),doOperationRequestDTO.when());
+        String result = applyCommandOverCustomer(aggregateId, doOperationRequestDTO.operation(), doOperationRequestDTO.when());
         return ResponseEntity.ok(result);
 
     }
@@ -93,7 +119,7 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
         DoOperationOnCustomerCommand doOperationOnCustomerCommand;
         String result;
         if (Arrays.asList(Operation.values()).contains(operation)) {
-            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(aggregateId, operation,when);
+            doOperationOnCustomerCommand = new DoOperationOnCustomerCommand(aggregateId, operation, when);
             result = commandGateway.sendAndWait(doOperationOnCustomerCommand);
         } else {
             throw new Exception("command not found");

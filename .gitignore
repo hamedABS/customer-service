@@ -1,11 +1,11 @@
 .gradle
 customer-command/build/
 customer-query/build/
-buildSrc/.gradle
-buildSrc/build
-core-api/build
+core-api/build/
+build
 !src/**/build/
-
+buildSrc/build/
+buildSrc/.gradle/*
 # Ignore Gradle GUI config
 gradle-app.setting
 

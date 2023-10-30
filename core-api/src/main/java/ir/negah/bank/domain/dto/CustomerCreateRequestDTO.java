@@ -53,4 +53,8 @@ public class CustomerCreateRequestDTO {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "MM/dd/yyyy")
     private LocalDate dateOfBirth;
+
+    private String postalCode;
+
+    private String cardSerialNo;
 }
