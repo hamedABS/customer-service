@@ -56,27 +56,27 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @PostMapping
     public String create(@RequestBody CustomerCreateRequestDTO requestDTO) throws JsonProcessingException {
-        ShahkarRequestDTO shahkarRequestDTO = new ShahkarRequestDTO(requestDTO.getNationalCode(), 0, requestDTO.getMobileNumber());
-        ChequeRequestDTO chequeRequestDTO = new ChequeRequestDTO(1, "1378125411");
-        NewsRequestDTO newsRequestDTO = new NewsRequestDTO("0", "123456789");
-        customerService.mobileVerification(shahkarRequestDTO);
-        customerService.estelam(chequeRequestDTO);
-        DateConverter dateConverter = new DateConverter();
-        JalaliDate jalaliDate2 = dateConverter.gregorianToJalali(requestDTO.getDateOfBirth().getYear(), requestDTO.getDateOfBirth().getMonthValue(), requestDTO.getDateOfBirth().getDayOfMonth());
-        String[] split = jalaliDate2.toString().split("-");
-        if (split[1].length() == 1) {
-            split[1] = "0".concat(split[1]);
-        }
-        if (split[2].length() == 1) {
-            split[2] = "0".concat(split[2]);
-        }
-        String joinedJalaliDate = String.join("", split[0], split[1], split[2]);
-//        String result2 = jalaliDate2.format(new JalaliDateFormatter("yyyyMMdd", JalaliDateFormatter.FORMAT_IN_PERSIAN));
-
-        CivilRegistrationResponseDTO civilRegistrationResponseDTO =customerService.getPersonalInfo(Long.parseLong(joinedJalaliDate), requestDTO.getNationalCode());
-        customerService.getPhotoByNationalCode(requestDTO.getCardSerialNo(), requestDTO.getNationalCode());
-        customerService.getAddress(requestDTO.getPostalCode());
-        customerService.getNews(newsRequestDTO);
+//        ShahkarRequestDTO shahkarRequestDTO = new ShahkarRequestDTO(requestDTO.getNationalCode(), 0, requestDTO.getMobileNumber());
+//        ChequeRequestDTO chequeRequestDTO = new ChequeRequestDTO(1, "1378125411");
+//        NewsRequestDTO newsRequestDTO = new NewsRequestDTO("0", "123456789");
+//        customerService.mobileVerification(shahkarRequestDTO);
+//        customerService.estelam(chequeRequestDTO);
+//        DateConverter dateConverter = new DateConverter();
+//        JalaliDate jalaliDate2 = dateConverter.gregorianToJalali(requestDTO.getDateOfBirth().getYear(), requestDTO.getDateOfBirth().getMonthValue(), requestDTO.getDateOfBirth().getDayOfMonth());
+//        String[] split = jalaliDate2.toString().split("-");
+//        if (split[1].length() == 1) {
+//            split[1] = "0".concat(split[1]);
+//        }
+//        if (split[2].length() == 1) {
+//            split[2] = "0".concat(split[2]);
+//        }
+//        String joinedJalaliDate = String.join("", split[0], split[1], split[2]);
+////        String result2 = jalaliDate2.format(new JalaliDateFormatter("yyyyMMdd", JalaliDateFormatter.FORMAT_IN_PERSIAN));
+//
+//        CivilRegistrationResponseDTO civilRegistrationResponseDTO =customerService.getPersonalInfo(Long.parseLong(joinedJalaliDate), requestDTO.getNationalCode());
+//        customerService.getPhotoByNationalCode(requestDTO.getCardSerialNo(), requestDTO.getNationalCode());
+//        customerService.getAddress(requestDTO.getPostalCode());
+//        customerService.getNews(newsRequestDTO);
         CreateCustomerCommand createCustomerCommand = customerMapper.createRequestDTOToCreateCommand(requestDTO);
         log.info(CustomerCreateRequestDTO.class.getSimpleName() + " Processing ...");
         createCustomerCommand.setAggregateId(UUID.randomUUID().toString());

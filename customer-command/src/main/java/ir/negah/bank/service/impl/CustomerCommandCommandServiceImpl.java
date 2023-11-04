@@ -16,16 +16,5 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @Service
-public record CustomerCommandCommandServiceImpl(RestTemplate restTemplate) implements CustomerCommandService {
-
-    @Override
-    public ShahkarResponseDTO validateMobileNumber(MobileVerificationRequestDTO requestDTO) {
-        HttpEntity<MobileVerificationRequestDTO> requestEntity = new HttpEntity<>(requestDTO);
-        ResponseEntity<ShahkarResponseDTO> exchange =
-                restTemplate.exchange("http://localhost:9004",
-                        HttpMethod.POST,
-                        requestEntity,
-                        ShahkarResponseDTO.class);
-        return exchange.getBody();
-    }
+public record CustomerCommandCommandServiceImpl() {
 }

@@ -8,6 +8,7 @@ import ir.negah.bank.exception.RequestedNotFoundException;
 import ir.negah.bank.query.GetAllCustomersQuery;
 import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.service.CustomerService;
+import ir.negah.bank.service.DeadLetterProcessor;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -42,7 +43,8 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/customers/query")
 public record CustomerQueryController(QueryGateway queryGateway,
-                                      CustomerService customerService) {
+                                      CustomerService customerService,
+                                      DeadLetterProcessor processor) {
 
     @GetMapping("/{customerAggregateId}")
     public ResponseEntity<CustomerFullDTO> getCustomer(@PathVariable(name = "customerAggregateId") String customerAggregateId) {
@@ -105,5 +107,10 @@ public record CustomerQueryController(QueryGateway queryGateway,
     @ExceptionHandler()
     public ResponseEntity<OperationGeneralResponseDTO> handleGeneralException(RequestedNotFoundException e) {
         return new ResponseEntity<>(new OperationGeneralResponseDTO(e.getMessage(), e.getOperation()), HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/any")
+    public CompletableFuture<Boolean> processAny(){
+        return processor.processorAnyFor("customer");
     }
 }

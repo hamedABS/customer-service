@@ -16,9 +16,15 @@ import ir.negah.bank.repository.OperationDoneByWhenWhyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.EventMessage;
+import org.axonframework.messaging.deadletter.DeadLetter;
+import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 /**
  * CREATED_BY abbaszadeh
@@ -27,19 +33,38 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-@ProcessingGroup("customer")
+@ProcessingGroup(value = "customer")
 @Slf4j
-public record CustomerEventHandler(CustomerRepository customerRepository,
-                                   OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository,
-                                   QueryUpdateEmitter queryUpdateEmitter,
-                                   CustomerMapper customerMapper) {
+public class CustomerEventHandler {
+
+    private CustomerRepository customerRepository;
+    private OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository;
+    private QueryUpdateEmitter queryUpdateEmitter;
+    private CustomerMapper customerMapper;
+
+    @Autowired
+    public CustomerEventHandler(CustomerRepository customerRepository,
+                                OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository,
+                                QueryUpdateEmitter queryUpdateEmitter,
+                                CustomerMapper customerMapper) {
+        this.customerRepository = customerRepository;
+        this.operationDoneByWhenWhyRepository = operationDoneByWhenWhyRepository;
+        this.queryUpdateEmitter = queryUpdateEmitter;
+        this.customerMapper = customerMapper;
+    }
 
     @EventHandler
-    public void on(CustomerCreatedEvent event) {
-        log.debug("Handling " + CustomerCreatedEvent.class.getSimpleName());
-        CustomerEntity entity = new CustomerEntity();
-        BeanUtils.copyProperties(event, entity);
-        customerRepository.save(entity);
+    @Transactional
+    public void on(CustomerCreatedEvent event, DeadLetter<EventMessage<CustomerCreatedEvent>> deadLetter) throws Exception {
+        if (deadLetter!=null){
+        } else{
+            log.debug("Handling " + CustomerCreatedEvent.class.getSimpleName());
+            CustomerEntity entity = new CustomerEntity();
+            BeanUtils.copyProperties(event, entity);
+            customerRepository.save(entity);
+        }
+
+//        throw new Exception("Salam From Handler");
     }
 
     @EventHandler
@@ -93,5 +118,12 @@ public record CustomerEventHandler(CustomerRepository customerRepository,
     private CustomerEntity getCustomerByAggregateId(String aggregateId) {
         return customerRepository.findByAggregateId(aggregateId).get();
     }
+
+/*
+    @ExceptionHandler
+    public void handle(Exception exception) {
+        exception.printStackTrace();
+    }*/
+
 
 }
