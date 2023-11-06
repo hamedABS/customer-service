@@ -1,7 +1,8 @@
-package ir.negah.bank.service;
+package ir.negah.bank.service.impl;
 
 import ir.negah.bank.domain.dto.CustomerCreateRequestDTO;
 import ir.negah.bank.repository.CustomerRepository;
+import ir.negah.bank.service.CustomerService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

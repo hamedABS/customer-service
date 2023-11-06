@@ -1,4 +1,4 @@
-package ir.negah.bank.service;
+package ir.negah.bank.service.impl;
 
 import ir.negah.bank.domain.CustomerEntity;
 import ir.negah.bank.domain.CustomerStatus;
@@ -13,6 +13,7 @@ import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.repository.CustomerRepository;
 import ir.negah.bank.repository.OperationDoneByWhenWhyRepository;
+import ir.negah.bank.service.CustomerEventHandlerService;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+
 /**
  * CREATED_BY abbaszadeh
  * DATE: ۲۰۲۳/۹/۳۰
@@ -35,7 +37,7 @@ import javax.transaction.Transactional;
 @Service
 @ProcessingGroup(value = "customer")
 @Slf4j
-public class CustomerEventHandler {
+public class CustomerEventHandlerServiceImpl implements CustomerEventHandlerService {
 
     private CustomerRepository customerRepository;
     private OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository;
@@ -43,10 +45,10 @@ public class CustomerEventHandler {
     private CustomerMapper customerMapper;
 
     @Autowired
-    public CustomerEventHandler(CustomerRepository customerRepository,
-                                OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository,
-                                QueryUpdateEmitter queryUpdateEmitter,
-                                CustomerMapper customerMapper) {
+    public CustomerEventHandlerServiceImpl(CustomerRepository customerRepository,
+                                           OperationDoneByWhenWhyRepository operationDoneByWhenWhyRepository,
+                                           QueryUpdateEmitter queryUpdateEmitter,
+                                           CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
         this.operationDoneByWhenWhyRepository = operationDoneByWhenWhyRepository;
         this.queryUpdateEmitter = queryUpdateEmitter;
@@ -54,17 +56,14 @@ public class CustomerEventHandler {
     }
 
     @EventHandler
-    @Transactional
-    public void on(CustomerCreatedEvent event, DeadLetter<EventMessage<CustomerCreatedEvent>> deadLetter) throws Exception {
-        if (deadLetter!=null){
-        } else{
-            log.debug("Handling " + CustomerCreatedEvent.class.getSimpleName());
-            CustomerEntity entity = new CustomerEntity();
-            BeanUtils.copyProperties(event, entity);
-            customerRepository.save(entity);
-        }
+    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    public void on(CustomerCreatedEvent event, DeadLetter<EventMessage<CustomerCreatedEvent>> deadLetter) {
+        //ToDo: what you want to do with deadLetter?
 
-//        throw new Exception("Salam From Handler");
+        log.debug("Handling " + CustomerCreatedEvent.class.getSimpleName());
+        CustomerEntity entity = new CustomerEntity();
+        BeanUtils.copyProperties(event, entity);
+        customerRepository.save(entity);
     }
 
     @EventHandler
@@ -119,11 +118,10 @@ public class CustomerEventHandler {
         return customerRepository.findByAggregateId(aggregateId).get();
     }
 
-/*
     @ExceptionHandler
     public void handle(Exception exception) {
-        exception.printStackTrace();
-    }*/
+        throw new RuntimeException(exception.getMessage());
+    }
 
 
 }

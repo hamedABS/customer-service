@@ -1,4 +1,4 @@
-package ir.negah.bank.service;
+package ir.negah.bank.config;
 
 import org.axonframework.config.EventProcessingConfiguration;
 import org.axonframework.eventhandling.EventMessage;

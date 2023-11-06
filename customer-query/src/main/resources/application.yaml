@@ -27,8 +27,8 @@ spring:
       maximum-pool-size: 5
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: update
+    show-sql: false
   flyway:
     enabled: false
 
@@ -44,5 +44,8 @@ axon:
   eventhandling:
     processors:
       customer:
-        dlq:
-          enabled: true
+        mode: pooled
+        thread-count: 4
+  axonserver:
+    keep-alive-time: 0
+    keep-alive-timeout: 604800000

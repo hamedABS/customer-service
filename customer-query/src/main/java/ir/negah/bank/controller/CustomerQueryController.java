@@ -8,7 +8,7 @@ import ir.negah.bank.exception.RequestedNotFoundException;
 import ir.negah.bank.query.GetAllCustomersQuery;
 import ir.negah.bank.query.GetCustomerByIdQuery;
 import ir.negah.bank.service.CustomerService;
-import ir.negah.bank.service.DeadLetterProcessor;
+import ir.negah.bank.config.DeadLetterProcessor;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -109,8 +109,8 @@ public record CustomerQueryController(QueryGateway queryGateway,
         return new ResponseEntity<>(new OperationGeneralResponseDTO(e.getMessage(), e.getOperation()), HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/any")
-    public CompletableFuture<Boolean> processAny(){
-        return processor.processorAnyFor("customer");
+    @GetMapping("/dead-letter/process-any/{processingGroup}")
+    public CompletableFuture<Boolean> processAny(@PathVariable(name = "processingGroup") String processingGroup) {
+        return processor.processorAnyFor(processingGroup);
     }
 }
