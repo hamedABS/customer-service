@@ -21,7 +21,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service

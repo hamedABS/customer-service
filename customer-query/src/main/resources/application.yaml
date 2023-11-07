@@ -28,7 +28,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
   flyway:
     enabled: false
 
@@ -40,3 +40,12 @@ springdoc:
   packages-to-scan: ir.negah.bank
   pathsToMatch: /**
 
+axon:
+  eventhandling:
+    processors:
+      customer:
+        mode: pooled
+        thread-count: 4
+  axonserver:
+    keep-alive-time: 0
+    keep-alive-timeout: 604800000

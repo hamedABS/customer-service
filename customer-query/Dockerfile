@@ -1,9 +1,9 @@
-FROM eclipse-temurin:17 as builder
+FROM eclipse-temurin:17.0.8.1_1-jre-focal as builder
 WORKDIR workspace
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} customer-query.jar
 RUN java -Djarmode=layertools -jar customer-query.jar extract
-FROM eclipse-temurin:17
+FROM eclipse-temurin:17.0.8.1_1-jre-focal
 RUN useradd spring
 USER spring
 WORKDIR workspace

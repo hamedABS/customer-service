@@ -1,6 +1,5 @@
 plugins {
     id 'common-dependencies'
-
 }
 
 

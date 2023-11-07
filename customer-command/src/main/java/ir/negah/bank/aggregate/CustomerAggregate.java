@@ -13,6 +13,7 @@ import ir.negah.bank.events.CustomerModifiedEvent;
 import ir.negah.bank.events.DoOperationOnCustomerEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
  */
 @Aggregate
 @Slf4j
+@ProcessingGroup("customer")
 public class CustomerAggregate {
 
 
@@ -80,7 +82,12 @@ public class CustomerAggregate {
         log.debug(CreateCustomerCommand.class.getSimpleName() + " Processing ...");
         CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
         CustomerCreatedEvent createdEvent = mapper.createCommandToCreatedEvent(createCustomerCommand);
-        AggregateLifecycle.apply(createdEvent);
+        try {
+            AggregateLifecycle.apply(createdEvent);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

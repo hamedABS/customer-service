@@ -2,7 +2,7 @@ package ir.negah.bank;
 
 import ir.negah.bank.domain.CustomerEntity;
 import ir.negah.bank.projection.CustomerProjection;
-import ir.negah.bank.service.CustomerEventHandler;
+import ir.negah.bank.service.impl.CustomerEventHandlerServiceImpl;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class CustomerQueryApplicationTests {
     private EventGateway eventGateway;
 
     @Autowired
-    private CustomerEventHandler customerEventHandler;
+    private CustomerEventHandlerServiceImpl customerEventHandler;
 
     private String customerId;
 

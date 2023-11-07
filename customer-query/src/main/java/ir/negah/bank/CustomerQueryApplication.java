@@ -18,8 +18,11 @@ public class CustomerQueryApplication {
         SpringApplication.run(CustomerQueryApplication.class, args);
     }
 
+
     @Bean
     public SagaStore sagaStore() {
         return new InMemorySagaStore();
     }
+
+
 }
