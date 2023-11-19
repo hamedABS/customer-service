@@ -89,7 +89,6 @@ public class CustomerAggregate {
         catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     @CommandHandler
