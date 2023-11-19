@@ -10,6 +10,5 @@ import lombok.Data;
  */
 @AllArgsConstructor
 @Data
-public class CustomerDeletedEvent {
-    private String aggregateId;
+public class CustomerDeletedEvent extends BaseEvent{
 }

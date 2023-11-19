@@ -18,10 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CustomerModifiedEvent {
-
-
-    private String aggregateId;
+public class CustomerModifiedEvent extends BaseEvent{
 
     private String accountNumber;
 

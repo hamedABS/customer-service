@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoOperationOnCustomerEvent {
-    private String aggregateId;
+public class DoOperationOnCustomerEvent extends BaseEvent{
     private Operation operation;
     private LocalDateTime when;
 }

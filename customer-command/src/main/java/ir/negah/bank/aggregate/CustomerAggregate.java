@@ -82,6 +82,7 @@ public class CustomerAggregate {
         log.debug(CreateCustomerCommand.class.getSimpleName() + " Processing ...");
         CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
         CustomerCreatedEvent createdEvent = mapper.createCommandToCreatedEvent(createCustomerCommand);
+        createdEvent.setAggregateId(createCustomerCommand.getAggregateId());
         try {
             AggregateLifecycle.apply(createdEvent);
         }
@@ -95,7 +96,8 @@ public class CustomerAggregate {
     public void handle(DeleteCustomerCommand command) {
         log.debug(DeleteCustomerCommand.class.getSimpleName() + " Processing ...");
 
-        CustomerDeletedEvent event = new CustomerDeletedEvent(command.getAggregateId());
+        CustomerDeletedEvent event = new CustomerDeletedEvent();
+        event.setAggregateId(command.getAggregateId());
         AggregateLifecycle.apply(event);
     }
 
@@ -103,8 +105,9 @@ public class CustomerAggregate {
     public void handle(DoOperationOnCustomerCommand command) {
         log.debug(DoOperationOnCustomerCommand.class.getSimpleName() + " Processing ...");
 
-        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getAggregateId(),
-                command.getOperation(), command.getWhen());
+        DoOperationOnCustomerEvent event = new DoOperationOnCustomerEvent(command.getOperation(), command.getWhen());
+        event.setAggregateId(command.getAggregateId());
+
         AggregateLifecycle.apply(event);
     }
 
@@ -112,6 +115,7 @@ public class CustomerAggregate {
     public void handle(UpdateCustomerCommand command) {
         log.debug(UpdateCustomerCommand.class.getSimpleName() + " Processing ...");
         CustomerModifiedEvent modifiedEvent = customerMapper.updateCommandToModifiedEvent(command);
+        modifiedEvent.setAggregateId(command.getAggregateId());
         AggregateLifecycle.apply(modifiedEvent);
     }
 
