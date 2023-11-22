@@ -28,7 +28,7 @@ public class CustomerCreateRequestDTO {
     @NotBlank(message = "signImage could not be null or empty")
     private String signImage;
 
-    @NotBlank(message = "customerStatus could not be null or empty")
+//    @NotBlank(message = "customerStatus could not be null or empty")
     private CustomerStatus customerStatus;
 
     @NotBlank(message = "firstname could not be null or empty")

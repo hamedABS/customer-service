@@ -121,7 +121,7 @@ public class RealCustomerEntity extends BaseEntity {
     @Column(name = "place_of_birth")
     private String placeOfBirth;
 
-    @Column(name = "place_of_birth")
+    @Column(name = "place_of_issuance")
     private String placeOfIssuance;
 
     @Column(name = "issuance_office_code", nullable = false)

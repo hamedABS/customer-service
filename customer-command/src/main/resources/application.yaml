@@ -28,12 +28,6 @@ springdoc:
   packages-to-scan: ir.negah.bank
   pathsToMatch: /**
 
-logging:
-  level:
-    ir.negah.bank: DEBUG
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
-    file: "app.log"
 
 feign:
   client:

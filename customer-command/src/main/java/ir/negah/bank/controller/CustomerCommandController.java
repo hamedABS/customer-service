@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
     private final static CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
 
     @PostMapping
-    public String create(@RequestBody CustomerCreateRequestDTO requestDTO) throws JsonProcessingException {
+    public String create(@RequestBody @Valid CustomerCreateRequestDTO requestDTO) throws JsonProcessingException {
 //        ShahkarRequestDTO shahkarRequestDTO = new ShahkarRequestDTO(requestDTO.getNationalCode(), 0, requestDTO.getMobileNumber());
 //        ChequeRequestDTO chequeRequestDTO = new ChequeRequestDTO(1, "1378125411");
 //        NewsRequestDTO newsRequestDTO = new NewsRequestDTO("0", "123456789");
@@ -86,7 +87,7 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @PutMapping("/{aggregateId}")
     public String update(@PathVariable(name = "aggregateId") String aggregateId,
-                         @RequestBody CustomerModificationRequestDTO requestDTO) {
+                         @RequestBody @Valid CustomerModificationRequestDTO requestDTO) {
         UpdateCustomerCommand updateCustomerCommand = customerMapper.modificationRequestDTOToUpdateCommand(requestDTO);
         updateCustomerCommand.setAggregateId(aggregateId);
         return commandGateway.sendAndWait(updateCustomerCommand);
@@ -100,7 +101,7 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
 
     @PostMapping("/{aggregateId}")
     public ResponseEntity<String> doCommand(@PathVariable(name = "aggregateId") String aggregateId,
-                                            @RequestBody DoOperationRequestDTO doOperationRequestDTO) throws Exception {
+                                            @RequestBody @Valid DoOperationRequestDTO doOperationRequestDTO) throws Exception {
         String result = applyCommandOverCustomer(aggregateId, doOperationRequestDTO.operation(), doOperationRequestDTO.when());
         return ResponseEntity.ok(result);
 
@@ -126,12 +127,6 @@ public record CustomerCommandController(CommandGateway commandGateway, EventStor
         }
 
         return result;
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity exceptionHandler(Exception e) {
-        ResponseEntity responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        return responseEntity;
     }
 
     @ExceptionHandler(MobileVerificationMismatchException.class)
